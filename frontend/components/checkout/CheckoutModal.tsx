@@ -1,25 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
-import { payments } from "@/lib/api";
+import { payments, IremboInvoiceResponse } from "@/lib/api";
 
-type Provider = "MOMO" | "STRIPE" | "FLUTTERWAVE";
+type Provider = "IREMBOPAY" | "MOMO" | "STRIPE" | "FLUTTERWAVE";
 type Telecom = "MTN" | "AIRTEL";
-type CheckoutStep = "details" | "processing" | "success" | "error";
+type CheckoutStep = "details" | "irembo_widget" | "verifying" | "processing" | "success" | "error";
 
 export default function CheckoutModal() {
   const { isCheckoutOpen, closeCheckout, items, totalRwf, clearCart } = useCart();
   const { user } = useAuth();
   const { locale, t } = useLanguage();
 
-  const [provider, setProvider] = useState<Provider>("MOMO");
+  const [provider, setProvider] = useState<Provider>("IREMBOPAY");
   const [telecom, setTelecom] = useState<Telecom>("MTN");
   const [phone, setPhone] = useState("078");
   const [fullName, setFullName] = useState(user?.fullName || "");
   const [email, setEmail] = useState(user?.email || "");
+
+  // IremboPay state
+  const [iremboInvoice, setIremboInvoice] = useState<IremboInvoiceResponse | null>(null);
+  const [pollingStatus, setPollingStatus] = useState<string>("Awaiting payment confirmation...");
+  const pollIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Stripe Card fields
   const [cardName, setCardName] = useState(user?.fullName || "");
@@ -31,13 +36,69 @@ export default function CheckoutModal() {
   const [txRef, setTxRef] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState("");
 
+  // Clean up polling interval on unmount
+  useEffect(() => {
+    return () => {
+      if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+    };
+  }, []);
+
   if (!isCheckoutOpen) return null;
+
+  // Poll verified server payment status
+  const startPollingVerifiedStatus = (invoiceNumber: string) => {
+    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+
+    pollIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await payments.getPaymentStatus(invoiceNumber);
+        if (res.webhookVerified && res.status === "SUCCEEDED") {
+          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+          setTxRef(invoiceNumber);
+          setStep("success");
+          clearCart();
+        } else if (res.status === "FAILED") {
+          if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
+          setStep("error");
+          setErrorMsg("Payment failed or was cancelled at IremboPay gateway.");
+        }
+      } catch {
+        // Continue polling
+      }
+    }, 2000);
+  };
 
   const handlePay = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStep("processing");
     setErrorMsg("");
 
+    if (provider === "IREMBOPAY") {
+      setStep("processing");
+      try {
+        const invoice = await payments.createIremboPayInvoice({
+          amountRwf: totalRwf,
+          description: `Murakaza order: ${items.length} item(s) (${items.map((i) => i.item.id).join(", ")})`,
+          customer: {
+            fullName: fullName || "Murakaza Student/Parent",
+            phone,
+            email,
+          },
+          items: items.map((i) => ({ id: i.item.id, qty: i.quantity, price: i.item.priceRwf })),
+        });
+
+        setIremboInvoice(invoice);
+        setStep("irembo_widget");
+        // Begin strict polling for cryptographically verified webhook transition
+        startPollingVerifiedStatus(invoice.invoiceNumber);
+      } catch (err: unknown) {
+        setStep("error");
+        const e = err as Error;
+        setErrorMsg(e.message || "Failed to initialize IremboPay invoice.");
+      }
+      return;
+    }
+
+    setStep("processing");
     try {
       const payload = {
         amountCents: totalRwf * 100,
@@ -49,7 +110,7 @@ export default function CheckoutModal() {
       const result = await payments.createIntent(payload);
       const reference = result.txRef || `MURA-${Date.now()}`;
 
-      // Simulate payment processing time (USSD push for MoMo, Card processing for Stripe)
+      // Simulate legacy payment processing time
       setTimeout(() => {
         setTxRef(reference);
         setStep("success");
@@ -62,7 +123,9 @@ export default function CheckoutModal() {
   };
 
   const handleResetAndClose = () => {
+    if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
     setStep("details");
+    setIremboInvoice(null);
     closeCheckout();
   };
 
@@ -99,61 +162,129 @@ export default function CheckoutModal() {
                 <label className="block text-xs font-bold uppercase tracking-wider text-ubumwe-900 mb-2">
                   {t("checkout.paymentMethod")}
                 </label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {/* IremboPay — Official Rwanda Gateway */}
+                  <button
+                    type="button"
+                    onClick={() => setProvider("IREMBOPAY")}
+                    className={`relative rounded-card p-3 border-2 text-left transition-all ${
+                      provider === "IREMBOPAY"
+                        ? "border-sun-600 bg-sun-100/40 shadow-soft ring-2 ring-sun-500/20"
+                        : "border-ubumwe-100 hover:border-ubumwe-400 bg-mist"
+                    }`}
+                  >
+                    <span className="absolute -top-2 right-2 rounded-full bg-sun-600 px-2 py-0.5 text-[9px] font-bold text-ubumwe-900 shadow">
+                      🇷🇼 Official
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-xl">🏛️</span>
+                      <span className="font-display text-xs font-bold text-ubumwe-900">IremboPay</span>
+                    </div>
+                    <p className="text-[10px] text-ink/60 mt-1 line-clamp-1">MoMo, Airtel, Cards</p>
+                  </button>
+
                   {/* Mobile Money */}
                   <button
                     type="button"
                     onClick={() => setProvider("MOMO")}
-                    className={`rounded-card p-3.5 border-2 text-left transition-all ${
+                    className={`rounded-card p-3 border-2 text-left transition-all ${
                       provider === "MOMO"
                         ? "border-sun-600 bg-sun-100/30 shadow-soft"
                         : "border-ubumwe-100 hover:border-ubumwe-400 bg-mist"
                     }`}
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <span className="text-xl">📱</span>
                       <span className="font-display text-xs font-bold text-ubumwe-900">MoMo / Airtel</span>
                     </div>
-                    <p className="text-[11px] text-ink/60 mt-1 line-clamp-1">MTN &amp; Airtel</p>
+                    <p className="text-[10px] text-ink/60 mt-1 line-clamp-1">Direct USSD Push</p>
                   </button>
 
                   {/* Stripe Card */}
                   <button
                     type="button"
                     onClick={() => setProvider("STRIPE")}
-                    className={`rounded-card p-3.5 border-2 text-left transition-all ${
+                    className={`rounded-card p-3 border-2 text-left transition-all ${
                       provider === "STRIPE"
                         ? "border-sun-600 bg-sun-100/30 shadow-soft"
                         : "border-ubumwe-100 hover:border-ubumwe-400 bg-mist"
                     }`}
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <span className="text-xl">💳</span>
                       <span className="font-display text-xs font-bold text-ubumwe-900">Card (Stripe)</span>
                     </div>
-                    <p className="text-[11px] text-ink/60 mt-1 line-clamp-1">Visa, Mastercard</p>
+                    <p className="text-[10px] text-ink/60 mt-1 line-clamp-1">Visa, Mastercard</p>
                   </button>
 
                   {/* Flutterwave */}
                   <button
                     type="button"
                     onClick={() => setProvider("FLUTTERWAVE")}
-                    className={`rounded-card p-3.5 border-2 text-left transition-all ${
+                    className={`rounded-card p-3 border-2 text-left transition-all ${
                       provider === "FLUTTERWAVE"
                         ? "border-sun-600 bg-sun-100/30 shadow-soft"
                         : "border-ubumwe-100 hover:border-ubumwe-400 bg-mist"
                     }`}
                   >
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <span className="text-xl">🏦</span>
                       <span className="font-display text-xs font-bold text-ubumwe-900">Flutterwave</span>
                     </div>
-                    <p className="text-[11px] text-ink/60 mt-1 line-clamp-1">Bank &amp; East Africa</p>
+                    <p className="text-[10px] text-ink/60 mt-1 line-clamp-1">Bank Transfer</p>
                   </button>
                 </div>
               </div>
 
               {/* Dynamic Provider Input Fields */}
+              {provider === "IREMBOPAY" && (
+                <div className="rounded-card bg-sun-50/50 border border-sun-600/30 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">🏛️</span>
+                      <p className="text-xs font-bold text-ubumwe-900">
+                        IremboPay Rwandan National Gateway
+                      </p>
+                    </div>
+                    <span className="rounded-full bg-imbuto-50 px-2 py-0.5 text-[10px] font-bold text-imbuto-700">
+                      Zero Surcharge
+                    </span>
+                  </div>
+                  <p className="text-xs text-ink/70">
+                    Generates an official invoice supporting <strong>MTN Mobile Money (*182#)</strong>,{" "}
+                    <strong>Airtel Money (*500#)</strong>, and <strong>Visa/Mastercard</strong> with cryptographically verified settlement.
+                  </p>
+
+                  <div className="grid sm:grid-cols-2 gap-3 pt-1">
+                    <div>
+                      <label className="block text-xs font-semibold text-ubumwe-900 mb-1">
+                        Payer Full Name
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="e.g. Jean Paul Ndayisaba"
+                        className="w-full rounded-card border border-ubumwe-100 px-3 py-2 text-xs bg-white focus:border-ubumwe focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-ubumwe-900 mb-1">
+                        Mobile Number (for SMS &amp; USSD)
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="078... or 073..."
+                        className="w-full rounded-card border border-ubumwe-100 px-3 py-2 text-xs bg-white focus:border-ubumwe focus:outline-none font-semibold"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
               {provider === "MOMO" && (
                 <div className="rounded-card bg-sun-100/20 border border-sun-600/30 p-4 space-y-4">
                   <div className="flex items-center gap-4">
@@ -294,12 +425,127 @@ export default function CheckoutModal() {
             </form>
           )}
 
+          {/* IREMBOPAY CHECKOUT WIDGET MODAL */}
+          {step === "irembo_widget" && iremboInvoice && (
+            <div className="py-2 space-y-5">
+              <div className="rounded-2xl border border-sun-600/30 bg-gradient-to-b from-sun-50/40 via-white to-white p-6 shadow-soft">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-ubumwe-100 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="grid h-10 w-10 place-items-center rounded-xl bg-ubumwe-900 text-white font-bold text-lg shadow-sm">
+                      🇷🇼
+                    </div>
+                    <div>
+                      <h3 className="font-display text-base font-bold text-ubumwe-900">
+                        IremboPay Checkout Portal
+                      </h3>
+                      <p className="text-xs text-ink/50">Official Rwandan E-Payment Gateway</p>
+                    </div>
+                  </div>
+                  <span className="rounded-pill bg-imbuto-50 px-3 py-1 text-xs font-bold text-imbuto-700 border border-imbuto-200">
+                    PENDING PAYMENT
+                  </span>
+                </div>
+
+                {/* Invoice Breakdown */}
+                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3 rounded-xl bg-mist p-3.5 text-xs">
+                  <div>
+                    <span className="text-ink/50 text-[11px] block">Invoice Number:</span>
+                    <span className="font-mono font-bold text-ubumwe-900">{iremboInvoice.invoiceNumber}</span>
+                  </div>
+                  <div>
+                    <span className="text-ink/50 text-[11px] block">Payer Name:</span>
+                    <span className="font-semibold text-ubumwe-900 truncate block">
+                      {fullName || user?.fullName || "Student"}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-ink/50 text-[11px] block">Amount to Pay:</span>
+                    <span className="font-bold text-imbuto text-sm">
+                      {totalRwf.toLocaleString()} RWF
+                    </span>
+                  </div>
+                </div>
+
+                {/* Handset instructions */}
+                <div className="mt-5 space-y-2.5">
+                  <p className="text-xs font-bold text-ubumwe-900 uppercase tracking-wider">
+                    How to complete payment on your device:
+                  </p>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <div className="rounded-xl border border-ubumwe-100 bg-white p-3 shadow-2xs">
+                      <div className="flex items-center justify-between font-bold text-xs text-ubumwe-900">
+                        <span>🟡 MTN MoMo (*182#)</span>
+                        <span className="text-sun-700 text-[10px] bg-sun-50 px-2 py-0.5 rounded">Prompt Sent</span>
+                      </div>
+                      <p className="mt-1 text-[11px] text-ink/70">
+                        Check your handset registered to <span className="font-semibold text-ubumwe-900">{phone}</span> and enter your Mobile Money PIN.
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-ubumwe-100 bg-white p-3 shadow-2xs">
+                      <div className="flex items-center justify-between font-bold text-xs text-ubumwe-900">
+                        <span>🔴 Airtel Money (*500#)</span>
+                        <span className="text-[10px] text-ink/50">USSD Ready</span>
+                      </div>
+                      <p className="mt-1 text-[11px] text-ink/70">
+                        Dial *500# or approve the payment notification from IremboPay.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Real-time Webhook Verification Status */}
+                <div className="mt-5 rounded-xl border border-ubumwe-200 bg-white p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-ubumwe-900 border-t-transparent shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-xs font-bold text-ubumwe-900">
+                        Awaiting Cryptographic Webhook Confirmation...
+                      </p>
+                      <p className="text-[11px] text-ink/50">
+                        The backend is verifying server-to-server settlement. This screen updates automatically upon confirmation.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Links */}
+                <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-2">
+                  <a
+                    href={iremboInvoice.paymentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-pill border border-ubumwe-200 bg-white px-4 py-2 text-xs font-bold text-ubumwe-900 hover:bg-ubumwe-50 shadow-sm transition-colors"
+                  >
+                    <span>Open Gateway in New Window</span>
+                    <span>↗</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={handleResetAndClose}
+                    className="rounded-pill border border-ubumwe-200 px-4 py-2 text-xs font-semibold text-ink/60 hover:bg-mist transition-colors"
+                  >
+                    Cancel Order
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {step === "processing" && (
             <div className="py-12 flex flex-col items-center justify-center text-center space-y-4">
               <div className="w-16 h-16 rounded-full border-4 border-sun-600 border-t-transparent animate-spin" />
-              <h3 className="font-display text-lg font-bold text-ubumwe-900">{t("checkout.processing")}</h3>
+              <h3 className="font-display text-lg font-bold text-ubumwe-900">
+                {provider === "IREMBOPAY" ? "Connecting to IremboPay..." : t("checkout.processing")}
+              </h3>
               <p className="text-xs text-ink/70 max-w-sm">
-                {provider === "MOMO" ? t("checkout.confirmPrompt") : "Verifying credentials with payment gateway..."}
+                {provider === "IREMBOPAY"
+                  ? "Generating official government invoice with Rwandan National Gateway..."
+                  : provider === "MOMO"
+                  ? t("checkout.confirmPrompt")
+                  : "Verifying credentials with payment gateway..."}
               </p>
             </div>
           )}

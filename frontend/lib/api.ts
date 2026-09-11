@@ -167,8 +167,52 @@ export const auth = {
 };
 
 // --- Payments ---
+export interface IremboInvoiceResponse {
+  payment: unknown;
+  invoiceNumber: string;
+  paymentUrl: string;
+  merchantTxRef: string;
+  amountRwf: number;
+  currency: string;
+}
+
+export interface PaymentStatusResponse {
+  providerRef: string;
+  provider: "IREMBOPAY" | "STRIPE" | "FLUTTERWAVE" | "MOMO";
+  status: "PENDING" | "SUCCEEDED" | "FAILED";
+  webhookVerified: boolean;
+  amountCents: number;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const payments = {
-  createIntent: async (payload: { amountCents: number; currency: string; description?: string; provider: "STRIPE" | "FLUTTERWAVE" | "MOMO" }) => {
+  createIremboPayInvoice: async (payload: {
+    amountRwf: number;
+    description?: string;
+    customer?: { fullName?: string; phone?: string; email?: string };
+    items?: unknown[];
+  }): Promise<IremboInvoiceResponse> => {
+    return await apiFetch<IremboInvoiceResponse>("/api/payments/irembopay/invoice", {
+      method: "POST",
+      body: JSON.stringify(payload),
+      auth: true,
+    });
+  },
+
+  getPaymentStatus: async (providerRef: string): Promise<PaymentStatusResponse> => {
+    return await apiFetch<PaymentStatusResponse>(`/api/payments/status/${providerRef}`, {
+      auth: true,
+    });
+  },
+
+  createIntent: async (payload: {
+    amountCents: number;
+    currency: string;
+    description?: string;
+    provider: "IREMBOPAY" | "STRIPE" | "FLUTTERWAVE" | "MOMO";
+  }) => {
     try {
       return await apiFetch<{ payment: unknown; clientSecret?: string; txRef?: string }>("/api/payments/intent", {
         method: "POST",

@@ -6,12 +6,17 @@ const {
   flutterwaveWebhook,
   momoWebhook,
   myPayments,
+  createIremboPayInvoice,
+  irembopayWebhook,
+  getPaymentStatus,
 } = require("../controllers/paymentsController");
 
 const router = express.Router();
 
 // Authenticated checkout flow.
 router.post("/intent", requireAuth, createIntent);
+router.post("/irembopay/invoice", requireAuth, createIremboPayInvoice);
+router.get("/status/:providerRef", requireAuth, getPaymentStatus);
 router.get("/me", requireAuth, myPayments);
 
 // Webhooks — NOT behind requireAuth (providers can't hold a user JWT).
@@ -21,5 +26,7 @@ router.get("/me", requireAuth, myPayments);
 router.post("/webhook/stripe", stripeWebhook);
 router.post("/webhook/flutterwave", flutterwaveWebhook);
 router.post("/webhook/momo", momoWebhook);
+router.post("/webhook/irembopay", irembopayWebhook);
 
 module.exports = router;
+

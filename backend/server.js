@@ -40,8 +40,15 @@ app.use(generalLimiter);
 // so this route is registered before the global JSON parser below.
 app.post("/api/payments/webhook/stripe", express.raw({ type: "application/json" }), stripeWebhook);
 
-// 50mb limit to support uploading high-res product photos, materials, and hero video clips
-app.use(express.json({ limit: "50mb" }));
+// 50mb limit to support uploads and webhook signature verification
+app.use(
+  express.json({
+    limit: "50mb",
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 app.get("/health", (req, res) => res.json({ status: "ok", time: new Date().toISOString() }));

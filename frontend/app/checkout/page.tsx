@@ -6,13 +6,13 @@ import { useCart } from "@/lib/CartContext";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { payments } from "@/lib/api";
 
-type PaymentProvider = "MOMO" | "FLUTTERWAVE" | "STRIPE";
+type PaymentProvider = "IREMBOPAY" | "MOMO" | "FLUTTERWAVE" | "STRIPE";
 
 export default function CheckoutPage() {
   const { cart, totalPriceRwf, clearCart } = useCart();
   const { locale } = useLanguage();
 
-  const [provider, setProvider] = useState<PaymentProvider>("MOMO");
+  const [provider, setProvider] = useState<PaymentProvider>("IREMBOPAY");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("078");
   const [pickupPoint, setPickupPoint] = useState("Kigali - Downtown Nyarugenge (Post Office)");
@@ -37,6 +37,18 @@ export default function CheckoutPage() {
     setError(null);
 
     try {
+      if (provider === "IREMBOPAY") {
+        const res = await payments.createIremboPayInvoice({
+          amountRwf: totalPriceRwf,
+          description: `Murakaza order: ${cart.length} item(s) for ${fullName} (${phone})`,
+          customer: { fullName, phone },
+          items: cart.map((i) => ({ id: i.item.id, qty: i.quantity, price: i.item.priceRwf })),
+        });
+        setOrderComplete(res.invoiceNumber);
+        clearCart();
+        return;
+      }
+
       const res = await payments.createIntent({
         amountCents: totalPriceRwf * 100,
         currency: "RWF",
@@ -160,10 +172,21 @@ export default function CheckoutPage() {
             <div className="space-y-3">
               {[
                 {
+                  id: "IREMBOPAY",
+                  title: "🇷🇼 IremboPay (Official Rwanda National Gateway)",
+                  desc:
+                    locale === "rw"
+                      ? "Uburyo bwizewe bwa Leta: MTN MoMo (*182#), Airtel Money (*500#), na Amakarita"
+                      : "Official Rwandan Gateway: MTN MoMo (*182#), Airtel Money (*500#), Visa/Mastercard",
+                  badge: "Recommended",
+                },
+                {
                   id: "MOMO",
                   title: "MTN Mobile Money & Airtel Money",
-                  desc: locale === "rw" ? "Kanda kuri telefone yawe wemeze umubare w'ibanga (*182#)" : "Instant USSD prompt (*182#) sent to your phone",
-                  badge: "Most Popular in Rwanda",
+                  desc:
+                    locale === "rw"
+                      ? "Kanda kuri telefone yawe wemeze umubare w'ibanga (*182#)"
+                      : "Instant USSD prompt (*182#) sent to your phone",
                 },
                 {
                   id: "FLUTTERWAVE",

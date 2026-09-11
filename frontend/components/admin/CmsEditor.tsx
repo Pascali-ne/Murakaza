@@ -122,14 +122,20 @@ export default function CmsEditor({ items, onSaved }: { items: CmsItem[]; onSave
             <input
               value={draft.localizedFields?.en?.title ?? ""}
               onChange={(e) => updateField("en", "title", e.target.value)}
-              placeholder="Title"
+              placeholder="Hero Headline (e.g. Everything your student needs...)"
               className="mt-2 w-full rounded-card border border-ubumwe-100 px-3 py-2 text-sm"
             />
             <textarea
               value={draft.localizedFields?.en?.subtitle ?? ""}
               onChange={(e) => updateField("en", "subtitle", e.target.value)}
-              placeholder="Subtitle / body"
+              placeholder="Hero Subtitle / Description"
               rows={3}
+              className="mt-2 w-full rounded-card border border-ubumwe-100 px-3 py-2 text-sm"
+            />
+            <input
+              value={draft.localizedFields?.en?.slidingTitle ?? ""}
+              onChange={(e) => updateField("en", "slidingTitle", e.target.value)}
+              placeholder="Sliding Tools Showcase Heading (EN)"
               className="mt-2 w-full rounded-card border border-ubumwe-100 px-3 py-2 text-sm"
             />
           </div>
@@ -138,18 +144,44 @@ export default function CmsEditor({ items, onSaved }: { items: CmsItem[]; onSave
             <input
               value={draft.localizedFields?.rw?.title ?? ""}
               onChange={(e) => updateField("rw", "title", e.target.value)}
-              placeholder="Umutwe"
+              placeholder="Umutwe w'ibanze (Hero)"
               className="mt-2 w-full rounded-card border border-ubumwe-100 px-3 py-2 text-sm"
             />
             <textarea
               value={draft.localizedFields?.rw?.subtitle ?? ""}
               onChange={(e) => updateField("rw", "subtitle", e.target.value)}
-              placeholder="Ibisobanuro"
+              placeholder="Ibisobanuro mu Kinyarwanda"
               rows={3}
+              className="mt-2 w-full rounded-card border border-ubumwe-100 px-3 py-2 text-sm"
+            />
+            <input
+              value={draft.localizedFields?.rw?.slidingTitle ?? ""}
+              onChange={(e) => updateField("rw", "slidingTitle", e.target.value)}
+              placeholder="Umutwe w'ibikoresho binyerera (RW)"
               className="mt-2 w-full rounded-card border border-ubumwe-100 px-3 py-2 text-sm"
             />
           </div>
         </div>
+
+        {/* Live Media Preview if editing video or banner */}
+        {(draft.mediaUrl || draft.posterUrl) && (
+          <div className="mt-4 rounded-xl border border-ubumwe-100 bg-ubumwe-900/10 p-3">
+            <p className="text-xs font-bold text-ubumwe-900">Live Media Preview:</p>
+            <div className="mt-2 relative h-36 w-full overflow-hidden rounded-lg bg-black">
+              {draft.mediaUrl ? (
+                <video
+                  src={draft.mediaUrl || undefined}
+                  poster={draft.posterUrl || undefined}
+                  controls
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={draft.posterUrl || ""} alt="" className="h-full w-full object-cover" />
+              )}
+            </div>
+          </div>
+        )}
 
         <label className="mt-4 flex items-center gap-2 text-sm font-medium text-ink/80">
           <input

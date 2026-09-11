@@ -4,12 +4,13 @@ import { createContext, useContext, useEffect, useMemo, useState, ReactNode } fr
 import en from "./en.json";
 import rw from "./rw.json";
 
-type Locale = "en" | "rw";
+export type Locale = "en" | "rw";
 
 const dictionaries: Record<Locale, Record<string, unknown>> = { en, rw };
 
-interface LanguageContextValue {
+export interface LanguageContextValue {
   locale: Locale;
+  language: Locale;
   setLocale: (locale: Locale) => void;
   t: (path: string) => string;
 }
@@ -46,7 +47,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [locale]);
 
   return (
-    <LanguageContext.Provider value={{ locale, setLocale, t }}>
+    <LanguageContext.Provider value={{ locale, language: locale, setLocale, t }}>
       {children}
     </LanguageContext.Provider>
   );

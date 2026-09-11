@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { cms, feedback as feedbackApi, CmsItem, FeedbackItem, AuthUser } from "@/lib/api";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import CmsEditor from "./CmsEditor";
+import MaterialsManager from "./MaterialsManager";
 
-type Tab = "content" | "feedback";
+type Tab = "materials" | "content" | "feedback";
 
 /**
  * Gate: render this only after confirming `user.role === "ADMIN"`
@@ -14,8 +15,8 @@ type Tab = "content" | "feedback";
  * authorized and only handles the dashboard UI.
  */
 export default function AdminDashboard({ user }: { user: AuthUser }) {
-  const { t } = useLanguage();
-  const [tab, setTab] = useState<Tab>("content");
+  const { t, language } = useLanguage();
+  const [tab, setTab] = useState<Tab>("materials");
   const [items, setItems] = useState<CmsItem[]>([]);
   const [pendingFeedback, setPendingFeedback] = useState<FeedbackItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -116,21 +117,27 @@ export default function AdminDashboard({ user }: { user: AuthUser }) {
       </div>
 
       <div className="mt-6 flex gap-2 border-b border-ubumwe-100">
-        {(["content", "feedback"] as Tab[]).map((tabKey) => (
+        {(["materials", "content", "feedback"] as Tab[]).map((tabKey) => (
           <button
             key={tabKey}
             onClick={() => setTab(tabKey)}
-            className={`px-4 py-2 text-sm font-semibold ${
-              tab === tabKey ? "border-b-2 border-ubumwe text-ubumwe" : "text-ink/60"
+            className={`px-4 py-2 text-sm font-semibold transition-colors ${
+              tab === tabKey ? "border-b-2 border-ubumwe text-ubumwe" : "text-ink/60 hover:text-ubumwe"
             }`}
           >
-            {tabKey === "content" ? t("admin.tabs.content") : t("admin.tabs.feedback")}
+            {tabKey === "materials"
+              ? (language === "rw" ? "🎒 Ibikoresho n'Amasomo" : "🎒 Materials & Supplies")
+              : tabKey === "content"
+              ? (language === "rw" ? "🎬 Hero & Video CMS" : "🎬 Hero & Video CMS")
+              : t("admin.tabs.feedback")}
           </button>
         ))}
       </div>
 
       {loading ? (
         <p className="mt-8 text-sm text-ink/60">…</p>
+      ) : tab === "materials" ? (
+        <MaterialsManager />
       ) : tab === "content" ? (
         <CmsEditor items={items} onSaved={refresh} />
       ) : (

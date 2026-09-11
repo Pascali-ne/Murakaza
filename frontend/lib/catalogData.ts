@@ -266,9 +266,401 @@ export const CATALOG_ITEMS: DetailedCatalogItem[] = [
       "Power": "2x AA Batteries",
       "Target Curriculum": "Primary 6 & Secondary S1-S4"
     },
+  },
+  {
+    id: "sup-007",
+    type: "SUPPLY",
+    category: "stationery",
+    priceRwf: 6500,
+    amountCents: 650000,
+    rating: 4.9,
+    reviewsCount: 89,
+    badge: "Essential",
+    stock: 310,
+    image: "https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "Premium Ballpoint & Gel Pen Box (50-Pack)",
+      rw: "Paki y'amakaramu meza y'umwimerere (Amakaramu 50)"
+    },
+    description: {
+      en: "Smooth-flow 0.7mm quick-drying ballpoint pens (30 Blue, 15 Black, 5 Red). Smudge-proof ink formulated for examination answer booklets.",
+      rw: "Amakaramu yandika neza kandi yuma vuba (30 y'ubururu, 15 y'umukara, 5 y'umutuku). Wino idapfa gusibama yagenewe ibizamini."
+    },
+    features: {
+      en: [
+        "Pack of 50 pens: 30 Blue, 15 Black, and 5 Red teacher/correction pens",
+        "Tungsten carbide ball tip provides effortless writing without skipping",
+        "Ventilated safety caps complying with international safety standards",
+        "Long-write cartridge with over 1,500 meters of continuous ink"
+      ],
+      rw: [
+        "Paki y'amakaramu 50: 30 y'ubururu, 15 y'umukara, na 5 y'umutuku yo gukosora",
+        "Umutwe w'ikaramu ukomeye utuma yandika neza cyane idasiganwa",
+        "Igifuniko gifite umwenge w'umutekano ku bana",
+        "Yandika igihe kirekire kirenga metero 1,500 za wino"
+      ]
+    },
+    specifications: {
+      "Tip Size": "0.7 mm Medium",
+      "Colors": "30 Blue, 15 Black, 5 Red",
+      "Ink Type": "Oil-based Low Viscosity",
+      "Certifications": "ISO 12757-2 Exam Compliant"
+    }
+  },
+  {
+    id: "sup-008",
+    type: "SUPPLY",
+    category: "instruments",
+    priceRwf: 18500,
+    amountCents: 1850000,
+    rating: 4.95,
+    reviewsCount: 42,
+    badge: "Teacher Choice",
+    stock: 35,
+    image: "https://images.unsplash.com/photo-1509228468518-180dd4864904?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "Oxford Classroom Blackboard Geometry Instruments Set",
+      rw: "Ibikoresho bya mwarimu byo kwigisha imibare ku kibaho"
+    },
+    description: {
+      en: "Large wooden & acrylic chalkboard tools for teachers and tutors: suction compass, 1-meter ruler, 60° triangle, and 180° protractor.",
+      rw: "Ibikoresho by'umwimerere bya mwarimu: compas ifata ku kibaho n'isukisoni, rula ya metero 1, n'ibipimo by'inguni binini."
+    },
+    features: {
+      en: [
+        "Heavy-duty polished hardwood and shatterproof acrylic construction",
+        "Rubber suction cup on compass pivot prevents chalkboard scratching",
+        "Bold millimeter and degree graduation marks readable from 15 meters away",
+        "Ergonomic center grab handles for stable drawing on vertical boards"
+      ],
+      rw: [
+        "Bikoze mu mbaho zikomeye z'umwimerere n'ibikoresho bidapfa kumeneka",
+        "Compas ifite gashanyarazi gafata ku kibaho kugira ngo itanyerera",
+        "Imirongo n'imibare byanditswe binini ku buryo umunyeshuri wese abibona",
+        "Bifite imifuniko yo gufataho yorohereza mwarimu gushushanya ku kibaho"
+      ]
+    },
+    specifications: {
+      "Components": "Compass, 1m Ruler, 60° Triangle, 45° Triangle, Protractor",
+      "Material": "Seasoned Hardwood & High-Impact Acrylic",
+      "Target Use": "Secondary Schools, TVET & Universities"
+    }
+  },
+  {
+    id: "sup-009",
+    type: "SUPPLY",
+    category: "art-craft",
+    priceRwf: 8900,
+    amountCents: 890000,
+    rating: 4.85,
+    reviewsCount: 61,
+    badge: "Creative",
+    stock: 75,
+    image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "Complete Student Art & Technical Drawing Kit",
+      rw: "Ibikoresho by'ubugeni no gushushanya by'abanyeshuri"
+    },
+    description: {
+      en: "Includes 24 vibrant watercolor cakes, nylon brushes, drawing graphite pencils (2B-6B), kneaded eraser, and A4 heavyweight sketchpad.",
+      rw: "Birimo amabara 24, amakarama yo gushushanya, uburonko bw'ubugeni, igihanagura, n'igitabo kinini cyo gushushanyiramo."
+    },
+    features: {
+      en: [
+        "24 highly pigmented, non-toxic watercolor pans with mixing lid",
+        "6 sketch graphite pencils ranging from hard to soft shading grades",
+        "A4 160gsm spiral-bound cold-press drawing paper book (40 sheets)",
+        "Includes blending stump, pencil sharpener, and nylon art brush set"
+      ],
+      rw: [
+        "Amabara 24 y'ubumenyi n'ubugeni atangiza ubuzima bw'abana",
+        "Amakaramu 6 yo gushushanya mu byiciro bitandukanye by'umwijima",
+        "Igitabo kinini gifite impapuro 40 zikomeye zo gushushanyiramo",
+        "Kirimo n'uburoso bw'amabara hamwe n'icyerezo"
+      ]
+    },
+    specifications: {
+      "Sketchbook Paper": "160 gsm Cold Press Acid-Free",
+      "Pencil Grades": "2H, HB, 2B, 4B, 6B, 8B",
+      "Safety": "Non-Toxic ASTM D-4236 Certified"
+    }
+  },
+  {
+    id: "sup-010",
+    type: "SUPPLY",
+    category: "office-supplies",
+    priceRwf: 7200,
+    amountCents: 720000,
+    rating: 4.75,
+    reviewsCount: 48,
+    badge: "Organized",
+    stock: 140,
+    image: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "A4 Heavy-Duty Document Ring Binder & Filing Set (6-Pack)",
+      rw: "Amadosiye akomeye yo kubikamo inyandiko n'amasomo (Paki ya 6)"
+    },
+    description: {
+      en: "Durable PVC lever-arch binders with reinforced metal corners, spine label holders, and 10-tab colored subject dividers.",
+      rw: "Amadosiye akomeye afite ibyuma birinda impande n'udupapuro tugaragaza amasomo atandukanye ku banyeshuri n'amashuri."
+    },
+    features: {
+      en: [
+        "Pack of 6 distinct colors for multi-subject or office categorization",
+        "Heavy-duty 2-ring lever-arch mechanism holds up to 500 sheets per binder",
+        "Metal shoe protection prevents base wear and tear",
+        "Includes customizable spine insert labels and 10-color index dividers"
+      ],
+      rw: [
+        "Paki y'amadosiye 6 afite amabara atandukanye yo gutandukanya amasomo",
+        "Ibyuma bikomeye bibika impapuro zigera kuri 500 muri buri dosiye",
+        "Impande z'ibyuma zirinda dosiye gucika cyangwa kononekara",
+        "Irimo udupapuro tw'amabara 10 two gutandukanya ibice by'amasomo"
+      ]
+    },
+    specifications: {
+      "Capacity": "500 Sheets (70mm Spine Width)",
+      "Format": "A4 Compatible",
+      "Cover": "FSC Certified Heavy Board with Wipe-Clean PVC"
+    }
+  },
+  {
+    id: "sup-011",
+    type: "SUPPLY",
+    category: "office-supplies",
+    priceRwf: 5400,
+    amountCents: 540000,
+    rating: 4.8,
+    reviewsCount: 52,
+    badge: "Desk Neat",
+    stock: 95,
+    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "Metal Mesh Study Desk Organizer & Stationery Caddy",
+      rw: "Agakoresho ko gutondekamo amakaramu n'ibikoresho ku meza"
+    },
+    description: {
+      en: "Multi-compartment organizer with dedicated slots for pens, sticky notes, paper clips, scissors, and phone/calculator stand.",
+      rw: "Agakoresho k'icyuma gatuma ameza yo kwigiraho ahora ateguye neza, kabika amakaramu n'udukoresho duto twose."
+    },
+    features: {
+      en: [
+        "6 partitioned compartments + 1 pull-out sliding drawer for paperclips",
+        "Sturdy steel mesh with powder-coated anti-scratch finish",
+        "Anti-slip rubber feet pad protects wooden desks and prevents tipping",
+        "Zero assembly required — ready to organize your study desk instantly"
+      ],
+      rw: [
+        "Imyanya 6 yo gutondekamo ibintu n'akadirishya k'udushinge n'utwuma",
+        "Gakoze mu cyuma gikomeye kidasigiriza ameza cyangwa ngo gafate umugese",
+        "Gafite amapine ya gomma adashobora kunyerera ku meza",
+        "Gahita gakoreshwa ako kanya nta bindi biteranywa"
+      ]
+    },
+    specifications: {
+      "Dimensions": "22 x 14 x 13 cm",
+      "Material": "Carbon Mesh Steel",
+      "Weight": "450 grams"
+    }
+  },
+  {
+    id: "sup-012",
+    type: "SUPPLY",
+    category: "stationery",
+    priceRwf: 4800,
+    amountCents: 480000,
+    rating: 4.88,
+    reviewsCount: 67,
+    badge: "Top Utility",
+    stock: 110,
+    image: "https://images.unsplash.com/photo-1568667256549-094345857637?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "Heavy-Duty Dual-Hole Rotary Pencil Sharpener",
+      rw: "Icyerezo gikomeye cy'amakaramu gifite imyanya ibiri"
+    },
+    description: {
+      en: "High-grade alloy helical blade sharpener with transparent shavings reservoir and desk-clamp mount for classrooms and study desks.",
+      rw: "Icyerezo gikomeye cy'icyuma gityaza amakaramu y'ubwoko bwose bitavunitse, gifite aho imyanda igwa hadasandara."
+    },
+    features: {
+      en: [
+        "Heavy-duty carbon alloy helical cutter core sharpens over 5,000 pencils",
+        "Adjustable pencil tip selector: fine needlepoint to blunt colored pencil",
+        "Auto-stop mechanism stops sharpening once the ideal point is reached",
+        "Spacious see-through receptacle prevents frequent emptying"
+      ],
+      rw: [
+        "Icyuma gityaza gikomeye cyane gishobora gutyaza amakaramu ibihumbi 5",
+        "Ushobora guhitamo ubukire bw'umunwa w'ikaramu ushaka",
+        "Kireka gutyaza iyo ikaramu igeze ku rugero rwiza kugira ngo itarangira",
+        "Gifite aho imyanda ibikwa hagaragara neza"
+      ]
+    },
+    specifications: {
+      "Pencil Diameter": "6mm to 8.2mm (Graphite & Colored)",
+      "Mounting": "Desk Clamp included",
+      "Blade": "Heat-treated helical steel"
+    }
+  },
+  {
+    id: "sup-013",
+    type: "SUPPLY",
+    category: "electronics",
+    priceRwf: 11500,
+    amountCents: 1150000,
+    rating: 4.92,
+    reviewsCount: 93,
+    badge: "Solar Ready",
+    stock: 80,
+    image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "Rechargeable Student Solar Desk Study Lamp",
+      rw: "Itara ryo kwigiraho rikongerwamo umuriro n'izuba (LED)"
+    },
+    description: {
+      en: "3-level touch dimming eye-caring LED lamp with flexible gooseneck, built-in rechargeable battery, and solar panel charging input.",
+      rw: "Itara ryiza ritabangamira amaso, rifite batiri irambye n'ubushobozi bwo gucomekwa ku mirasire y'izuba cyangwa umuriro."
+    },
+    features: {
+      en: [
+        "Flicker-free blue-light filtered LED prevents eye strain during night study",
+        "Built-in 2,000mAh lithium battery delivers up to 10 hours continuous light",
+        "Dual charging: USB-C standard plug and auxiliary solar panel input",
+        "360-degree flexible gooseneck directs light precisely where needed"
+      ],
+      rw: [
+        "Urumuri rwa LED rurinda amaso kunanirwa mu gihe cyo kwiga nijoro",
+        "Batiri ya 2,000mAh irambye imara amasaha agera ku 10 icometse",
+        "Yuzuzwa n'umuriro w'amashanyarazi wa USB-C cyangwa imirasire y'izuba",
+        "Ijosi ry'itara ririhina mu mpande zose ku buryo ryerekana aho ushaka"
+      ]
+    },
+    specifications: {
+      "Brightness Levels": "Low (Study), Medium (Reading), High (Precision)",
+      "Battery Life": "Up to 10 Hours on single charge",
+      "Color Temperature": "4000K Natural Daylight"
+    }
+  },
+  {
+    id: "sup-014",
+    type: "SUPPLY",
+    category: "lifestyle",
+    priceRwf: 9800,
+    amountCents: 980000,
+    rating: 4.9,
+    reviewsCount: 78,
+    badge: "Eco-Friendly",
+    stock: 130,
+    image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "Insulated Stainless Steel Student Bottle & Bento Box (750ml)",
+      rw: "Icupa ry'amazi rikomeye n'agasanduku k'ifunguro ry'umunyeshuri"
+    },
+    description: {
+      en: "Food-grade double-walled stainless steel bottle that keeps drinks cold for 24h or hot for 12h, plus leak-proof bento lunch container.",
+      rw: "Icupa n'agasanduku birinda ibiryo n'amazi gukonja cyangwa gushyuha, bikoze mu byuma bitangiza ubuzima (BPA Free)."
+    },
+    features: {
+      en: [
+        "18/8 food-grade stainless steel — zero plastic aftertaste and 100% BPA free",
+        "Vacuum insulation keeps drinking water icy cold during hot afternoons",
+        "Leak-proof silicone sealed cap with integrated carrying loop",
+        "Bento box includes 3 portion-controlled compartments and fork/spoon set"
+      ],
+      rw: [
+        "Bikoze mu byuma bikomeye bitangiza ibiribwa kandi bitera ubuzima bwiza",
+        "Bifite tekinoloji igumisha amazi akonje umunsi wose ku mashuri",
+        "Igifuniko gifunze neza kidashobora kumena amazi mu gikapu",
+        "Agasanduku k'ibiryo gafite ibice 3 bitandukanye n'ikiyiko n'ikanya"
+      ]
+    },
+    specifications: {
+      "Bottle Volume": "750 ml",
+      "Insulation": "Double-Wall Vacuum Insulation",
+      "Bento Capacity": "1,000 ml with silicone leak-proof seals"
+    }
+  },
+  {
+    id: "sup-015",
+    type: "SUPPLY",
+    category: "stationery",
+    priceRwf: 6000,
+    amountCents: 600000,
+    rating: 4.82,
+    reviewsCount: 45,
+    badge: "Curriculum",
+    stock: 160,
+    image: "https://images.unsplash.com/photo-1524661135-423995f22d0b?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "Classroom Educational Wall Maps: Rwanda (30 Districts) & East Africa",
+      rw: "Ikarita y'u Rwanda (Uturere 30) n'Afurika y'Iburasirazuba"
+    },
+    description: {
+      en: "Laminated write-and-wipe large geographical & administrative wall poster with up-to-date Rwandan district boundaries and EAC capitals.",
+      rw: "Ikarita nini igaragaza uturere 30 tw'u Rwanda n'imbibi z'ibihugu bituranye, ikoze mu buryo bwandikwaho bukanahanagurika."
+    },
+    features: {
+      en: [
+        "Detailed administrative divisions featuring all 30 districts and provincial capitals",
+        "Heavy 250gsm cardstock sealed with double-sided glossy wipe-clean laminate",
+        "Includes topography, national parks (Akagera, Nyungwe, Volcanoes), lakes, and rivers",
+        "Reverse side features comprehensive East African Community (EAC) regional map"
+      ],
+      rw: [
+        "Igaragaza uturere 30 twose n'imijyi mikuru y'intara mu Rwanda",
+        "Impapuro zikomeye zometseho pulasitiki ku buryo ushobora kwandikaho ukahanagura",
+        "Irimo pariki z'igihugu, ibiyaga, n'imisozi y'u Rwanda",
+        "Inyuma yayo hari ikarita y'umuryango wa Afurika y'Iburasirazuba (EAC)"
+      ]
+    },
+    specifications: {
+      "Dimensions": "100 x 70 cm (Poster size)",
+      "Lamination": "30 Micron High-Gloss Film",
+      "Compliance": "Rwanda Basic Education Board Geography Standards"
+    }
+  },
+  {
+    id: "sup-016",
+    type: "SUPPLY",
+    category: "stem",
+    priceRwf: 28500,
+    amountCents: 2850000,
+    rating: 4.96,
+    reviewsCount: 39,
+    badge: "Robotics Kit",
+    stock: 45,
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=800&auto=format&fit=crop&q=80",
+    title: {
+      en: "Solar STEM Robotics & Electronics Breadboard Starter Kit",
+      rw: "Ibikoresho by'ubumenyi bw'ikoranabuhanga n'ingufu z'izuba (Robotics)"
+    },
+    description: {
+      en: "Complete hands-on electronics project kit: mini solar panel, breadboard, DC motors, LEDs, buzzer, and Rwandan beginner project guide.",
+      rw: "Kit ifasha abanyeshuri kurema ibikoresho by'ikoranabuhanga bibyaza umuriro imirasire y'izuba no kwiga ubumenyi bwa electronics."
+    },
+    features: {
+      en: [
+        "No soldering required — plug-and-play jumper wires and solderless breadboard",
+        "Build 15+ guided projects: solar rover car, light-sensitive alarm, Morse code beeper",
+        "Includes DC motors, mini 6V solar cell, light sensors (LDRs), LEDs, and switches",
+        "Step-by-step illustrated manual with Kinyarwanda & English circuit diagrams"
+      ],
+      rw: [
+        "Nta gusudira bisaba — ibisinga bicomekwa mu buryo bworoshye ku bana",
+        "Gukora imishinga irenga 15 y'ikoranabuhanga n'imodoka zigendeshwa n'izuba",
+        "Irimo moteri, imirasire y'izuba ya 6V, amatoroshi, n'udupfunyiko two gucomeka",
+        "Igitabo kiyobora cyanditse mu Kinyarwanda no mu Cyongereza n'ibishushanyo"
+      ]
+    },
+    specifications: {
+      "Projects Included": "15 Guided Experiments",
+      "Breadboard": "830-Tie Point Solderless Breadboard",
+      "Solar Panel": "6V 150mA Monocrystalline",
+      "Age Range": "Ages 10 through Secondary S6"
+    },
     certification: {
       body: "REB",
-      label: { en: "REB STEM Curriculum Companion", rw: "Ishingiye ku nteganyanyigisho ya REB" }
+      label: { en: "REB STEM Innovation Endorsed", rw: "Byemewe na REB mu buvumbuzi bwa STEM" }
     }
   },
 

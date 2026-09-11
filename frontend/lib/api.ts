@@ -150,6 +150,26 @@ export const catalog = {
       return { item: found };
     }
   },
+
+  create: (item: Partial<CatalogItem>) =>
+    apiFetch<{ item: CatalogItem; message: string }>("/api/catalog", {
+      method: "POST",
+      body: JSON.stringify(item),
+      auth: true,
+    }),
+
+  update: (id: string, patch: Partial<CatalogItem>) =>
+    apiFetch<{ item: CatalogItem; message: string }>(`/api/catalog/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(patch),
+      auth: true,
+    }),
+
+  remove: (id: string) =>
+    apiFetch<{ message: string; id: string }>(`/api/catalog/${id}`, {
+      method: "DELETE",
+      auth: true,
+    }),
 };
 
 // --- Types ---
@@ -163,6 +183,7 @@ export interface CatalogItem {
   reviewsCount: number;
   badge?: string;
   stock?: number;
+  featuredInHero?: boolean;
   instructor?: string;
   duration?: string;
   level?: string;

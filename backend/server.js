@@ -32,6 +32,7 @@ app.use((req, res, next) => {
 });
 
 app.use(corsMiddleware);
+app.options("*", corsMiddleware);
 app.use(generalLimiter);
 
 // Stripe requires the RAW request body to verify webhook signatures,

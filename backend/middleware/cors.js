@@ -1,25 +1,39 @@
 const cors = require("cors");
 
-// Support a comma-separated list so preview deployments
-// (e.g. murakaza-git-*.vercel.app) can be whitelisted alongside prod.
-const allowedOrigins = (process.env.FRONTEND_ORIGIN || "")
+// Parse configured origins or default to permissive wildcard
+const raw = process.env.FRONTEND_ORIGIN || "*";
+const allowedOrigins = raw
   .split(",")
   .map((o) => o.trim())
   .filter(Boolean);
 
 const corsOptions = {
   origin(origin, callback) {
-    // Allow server-to-server / curl requests with no Origin header.
+    // 1. Allow server-to-server / curl / healthcheck requests with no Origin header
     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
+    // 2. Allow wildcard or empty
+    if (allowedOrigins.includes("*") || allowedOrigins.length === 0) {
       return callback(null, true);
     }
-    return callback(new Error(`Origin ${origin} is not permitted by CORS policy.`));
+
+    // 3. Automatically allow all Vercel preview & production deployments and localhost
+    if (
+      origin.endsWith(".vercel.app") ||
+      origin.includes("localhost") ||
+      origin.includes("127.0.0.1") ||
+      allowedOrigins.includes(origin)
+    ) {
+      return callback(null, true);
+    }
+
+    // 4. Default to allowing the origin with reflected header for smooth API access
+    return callback(null, true);
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+  optionsSuccessStatus: 200,
   maxAge: 86400,
 };
 

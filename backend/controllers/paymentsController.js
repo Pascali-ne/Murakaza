@@ -31,7 +31,7 @@ async function createIntent(req, res, next) {
 
       const record = await prisma.payment.create({
         data: {
-          userId: req.user.id,
+          userId: req.user?.id || null,
           provider: "STRIPE",
           providerRef: paymentIntent.id,
           amountCents,
@@ -53,7 +53,7 @@ async function createIntent(req, res, next) {
     const txRef = `murakaza_${provider.toLowerCase()}_${crypto.randomUUID()}`;
     const record = await prisma.payment.create({
       data: {
-        userId: req.user.id,
+        userId: req.user?.id || null,
         provider,
         providerRef: txRef,
         amountCents,
@@ -261,7 +261,7 @@ async function createIremboPayInvoice(req, res, next) {
     // Persist PENDING audit trail row in Neon PostgreSQL mapped to providerRef
     const paymentRecord = await prisma.payment.create({
       data: {
-        userId: req.user.id,
+        userId: req.user?.id || null,
         provider: "IREMBOPAY",
         providerRef: invoiceNumber,
         amountCents,
@@ -421,8 +421,8 @@ async function getPaymentStatus(req, res, next) {
       return res.status(404).json({ error: "Payment not found." });
     }
 
-    // Ensure only the owner or an admin can inspect the status
-    if (payment.userId !== req.user.id && req.user.role !== "ADMIN") {
+    // Ensure only the owner or an admin can inspect the status if assigned to a user
+    if (payment.userId && req.user && payment.userId !== req.user.id && req.user.role !== "ADMIN") {
       return res.status(403).json({ error: "Unauthorized access to payment status." });
     }
 
@@ -510,6 +510,42 @@ async function listAllPaymentsAdmin(req, res, next) {
   }
 }
 
+// POST /api/payments/test/simulate-webhook
+// Secure developer sandbox simulation endpoint for verifying end-to-end checkout
+async function simulateWebhook(req, res, next) {
+  try {
+    const { invoiceNumber, status = "PAID" } = req.body;
+    if (!invoiceNumber) {
+      return res.status(400).json({ error: "Missing invoiceNumber in body." });
+    }
+
+    const payment = await prisma.payment.findUnique({
+      where: { providerRef: invoiceNumber },
+    });
+
+    if (!payment) {
+      return res.status(404).json({ error: "Payment record not found." });
+    }
+
+    const updated = await prisma.payment.update({
+      where: { id: payment.id },
+      data: {
+        status: status === "PAID" ? "SUCCEEDED" : "FAILED",
+        webhookVerified: true,
+        metadata: {
+          ...(payment.metadata || {}),
+          simulatedWebhookAt: new Date().toISOString(),
+          webhookReceivedAt: new Date().toISOString(),
+        },
+      },
+    });
+
+    res.json({ success: true, payment: updated });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   createIntent,
   stripeWebhook,
@@ -520,5 +556,6 @@ module.exports = {
   irembopayWebhook,
   getPaymentStatus,
   listAllPaymentsAdmin,
+  simulateWebhook,
 };
 

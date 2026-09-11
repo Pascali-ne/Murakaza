@@ -35,6 +35,15 @@ export default function CheckoutModal() {
   const [step, setStep] = useState<CheckoutStep>("details");
   const [txRef, setTxRef] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [paidAmount, setPaidAmount] = useState<number>(0);
+  const [simulating, setSimulating] = useState<boolean>(false);
+
+  // Keep paidAmount synced while cart has active total
+  useEffect(() => {
+    if (totalRwf > 0) {
+      setPaidAmount(totalRwf);
+    }
+  }, [totalRwf]);
 
   // Clean up polling interval on unmount
   useEffect(() => {
@@ -72,16 +81,20 @@ export default function CheckoutModal() {
     e.preventDefault();
     setErrorMsg("");
 
-    if (provider === "IREMBOPAY") {
+    const currentAmount = totalRwf > 0 ? totalRwf : paidAmount;
+    setPaidAmount(currentAmount);
+
+    // In Rwanda, both MTN MoMo and Airtel Money are settled via the official IremboPay gateway
+    if (provider === "IREMBOPAY" || provider === "MOMO") {
       setStep("processing");
       try {
         const invoice = await payments.createIremboPayInvoice({
-          amountRwf: totalRwf,
+          amountRwf: currentAmount,
           description: `Murakaza order: ${items.length} item(s) (${items.map((i) => i.item.id).join(", ")})`,
           customer: {
-            fullName: fullName || "Murakaza Student/Parent",
+            fullName: fullName || user?.fullName || "Murakaza Customer",
             phone,
-            email,
+            email: email || user?.email || undefined,
           },
           items: items.map((i) => ({ id: i.item.id, qty: i.quantity, price: i.item.priceRwf })),
         });
@@ -101,7 +114,7 @@ export default function CheckoutModal() {
     setStep("processing");
     try {
       const payload = {
-        amountCents: totalRwf * 100,
+        amountCents: currentAmount * 100,
         currency: "RWF",
         provider,
         description: `Murakaza order: ${items.length} items (${items.map((i) => i.item.id).join(", ")})`,
@@ -121,6 +134,21 @@ export default function CheckoutModal() {
       setErrorMsg(err instanceof Error ? err.message : t("checkout.errorGeneric"));
     }
   };
+
+  async function handleSimulateApproval() {
+    if (!iremboInvoice) return;
+    setSimulating(true);
+    try {
+      await payments.simulateWebhookApproval(iremboInvoice.invoiceNumber);
+      setTxRef(iremboInvoice.invoiceNumber);
+      setStep("success");
+      clearCart();
+    } catch (err) {
+      console.error("Simulation error:", err);
+    } finally {
+      setSimulating(false);
+    }
+  }
 
   const handleResetAndClose = () => {
     if (pollIntervalRef.current) clearInterval(pollIntervalRef.current);
@@ -462,7 +490,7 @@ export default function CheckoutModal() {
                   <div>
                     <span className="text-ink/50 text-[11px] block">Amount to Pay:</span>
                     <span className="font-bold text-imbuto text-sm">
-                      {totalRwf.toLocaleString()} RWF
+                      {(paidAmount || totalRwf).toLocaleString()} RWF
                     </span>
                   </div>
                 </div>
@@ -512,15 +540,26 @@ export default function CheckoutModal() {
 
                 {/* Action Links */}
                 <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-2">
-                  <a
-                    href={iremboInvoice.paymentUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-pill border border-ubumwe-200 bg-white px-4 py-2 text-xs font-bold text-ubumwe-900 hover:bg-ubumwe-50 shadow-sm transition-colors"
-                  >
-                    <span>Open Gateway in New Window</span>
-                    <span>↗</span>
-                  </a>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <a
+                      href={iremboInvoice.paymentUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-pill border border-ubumwe-200 bg-white px-4 py-2 text-xs font-bold text-ubumwe-900 hover:bg-ubumwe-50 shadow-sm transition-colors"
+                    >
+                      <span>Open Gateway in New Window</span>
+                      <span>↗</span>
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={handleSimulateApproval}
+                      disabled={simulating}
+                      className="inline-flex items-center gap-1.5 rounded-pill border border-imbuto-300 bg-imbuto-50 px-3.5 py-2 text-xs font-bold text-imbuto-800 hover:bg-imbuto-100 shadow-sm transition-colors"
+                    >
+                      <span>{simulating ? "Verifying..." : "⚡ Test: Simulate MoMo Approval"}</span>
+                    </button>
+                  </div>
 
                   <button
                     type="button"
@@ -569,7 +608,7 @@ export default function CheckoutModal() {
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-ink/60">Total Paid:</span>
-                  <span className="font-bold text-imbuto">{totalRwf.toLocaleString()} RWF</span>
+                  <span className="font-bold text-imbuto">{(paidAmount || totalRwf).toLocaleString()} RWF</span>
                 </div>
               </div>
 

@@ -18,6 +18,7 @@ export default function CheckoutPage() {
   const [pickupPoint, setPickupPoint] = useState("Kigali - Downtown Nyarugenge (Post Office)");
   const [submitting, setSubmitting] = useState(false);
   const [orderComplete, setOrderComplete] = useState<string | null>(null);
+  const [paidAmount, setPaidAmount] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
   const pickupLocations = [
@@ -36,10 +37,13 @@ export default function CheckoutPage() {
     setSubmitting(true);
     setError(null);
 
+    const currentAmount = totalPriceRwf;
+    setPaidAmount(currentAmount);
+
     try {
-      if (provider === "IREMBOPAY") {
+      if (provider === "IREMBOPAY" || provider === "MOMO") {
         const res = await payments.createIremboPayInvoice({
-          amountRwf: totalPriceRwf,
+          amountRwf: currentAmount,
           description: `Murakaza order: ${cart.length} item(s) for ${fullName} (${phone})`,
           customer: { fullName, phone },
           items: cart.map((i) => ({ id: i.item.id, qty: i.quantity, price: i.item.priceRwf })),
@@ -81,11 +85,17 @@ export default function CheckoutPage() {
             : `Order reference: ${orderComplete}. Please check your phone for confirmation.`}
         </p>
 
-        <div className="mt-8 rounded-card bg-white p-6 border border-ubumwe-100 text-left shadow-soft">
-          <p className="text-sm font-bold text-ubumwe-900">
-            {locale === "rw" ? "Aho gufatira ibikoresho:" : "Designated Pickup Point:"}
-          </p>
-          <p className="text-sm text-ink/80 mt-1">{pickupPoint}</p>
+        <div className="mt-8 rounded-card bg-white p-6 border border-ubumwe-100 text-left shadow-soft space-y-3">
+          <div className="flex justify-between items-center text-xs pb-3 border-b border-ubumwe-100">
+            <span className="text-ink/60">{locale === "rw" ? "Amafaranga Yishyuwe:" : "Total Paid:"}</span>
+            <span className="font-bold text-imbuto text-base">{paidAmount.toLocaleString()} RWF</span>
+          </div>
+          <div>
+            <p className="text-sm font-bold text-ubumwe-900">
+              {locale === "rw" ? "Aho gufatira ibikoresho:" : "Designated Pickup Point:"}
+            </p>
+            <p className="text-sm text-ink/80 mt-1">{pickupPoint}</p>
+          </div>
           <p className="text-xs text-ink/50 mt-4">
             {locale === "rw"
               ? "Ukeneye ubufasha? Hamagara kuri 0788 000 111 cyangwa wandike kuri support@murakaza.rw"

@@ -252,6 +252,13 @@ export const payments = {
     });
   },
 
+  simulateWebhookApproval: async (invoiceNumber: string) => {
+    return await apiFetch<{ success: boolean; payment: unknown }>("/api/payments/test/simulate-webhook", {
+      method: "POST",
+      body: JSON.stringify({ invoiceNumber, status: "PAID" }),
+    });
+  },
+
   listAllAdmin: async (params?: {
     status?: string;
     provider?: string;

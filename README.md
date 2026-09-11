@@ -95,3 +95,9 @@ UX, since they weren't specified in the brief: the supplies/courses product
 grid and detail pages, the client-side Stripe Elements / Flutterwave-hosted
 checkout screens, and the `/login` and `/signup` pages themselves (the API
 routes they call — `/api/auth/login`, `/api/auth/register` — are complete).
+
+## Live Deployments
+
+- **Backend API (Render)**: [https://murakaza-api.onrender.com](https://murakaza-api.onrender.com)
+- **Frontend App (Vercel)**: [https://murakaza.vercel.app](https://murakaza.vercel.app)
+

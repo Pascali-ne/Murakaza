@@ -1,8 +1,15 @@
 {
-  "devDependencies": {
-    "prisma": "^5.22.0"
+  "name": "murakaza",
+  "version": "1.0.0",
+  "description": "Murakaza bilingual EdTech commerce platform",
+  "main": "backend/server.js",
+  "scripts": {
+    "build": "cd backend && npm install && node scripts/generate.js",
+    "prisma:generate": "cd backend && node scripts/generate.js",
+    "start": "cd backend && node server.js"
   },
   "dependencies": {
-    "@prisma/client": "^5.22.0"
+    "@prisma/client": "^5.22.0",
+    "prisma": "^5.22.0"
   }
 }

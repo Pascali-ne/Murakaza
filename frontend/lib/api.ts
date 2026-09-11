@@ -187,6 +187,51 @@ export interface PaymentStatusResponse {
   updatedAt: string;
 }
 
+export interface AdminPaymentItem {
+  id: string;
+  userId: string;
+  provider: "IREMBOPAY" | "STRIPE" | "FLUTTERWAVE" | "MOMO";
+  providerRef: string;
+  amountCents: number;
+  currency: string;
+  status: "PENDING" | "SUCCEEDED" | "FAILED" | "REFUNDED";
+  description: string | null;
+  metadata: {
+    customer?: {
+      fullName?: string;
+      phone?: string;
+      email?: string;
+    };
+    invoiceNumber?: string;
+    merchantTxRef?: string;
+    webhookReceivedAt?: string;
+    itemsCount?: number;
+    pickupLocation?: string;
+    orderStatus?: string;
+    [key: string]: unknown;
+  } | null;
+  webhookVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+  user?: {
+    id: string;
+    fullName: string;
+    email: string;
+  };
+}
+
+export interface AdminPaymentsResponse {
+  payments: AdminPaymentItem[];
+  summary: {
+    totalCount: number;
+    succeededCount: number;
+    pendingCount: number;
+    failedCount: number;
+    verifiedCount: number;
+    totalVolumeRwf: number;
+  };
+}
+
 export const payments = {
   createIremboPayInvoice: async (payload: {
     amountRwf: number;
@@ -203,6 +248,21 @@ export const payments = {
 
   getPaymentStatus: async (providerRef: string): Promise<PaymentStatusResponse> => {
     return await apiFetch<PaymentStatusResponse>(`/api/payments/status/${providerRef}`, {
+      auth: true,
+    });
+  },
+
+  listAllAdmin: async (params?: {
+    status?: string;
+    provider?: string;
+    search?: string;
+  }): Promise<AdminPaymentsResponse> => {
+    const qs = new URLSearchParams();
+    if (params?.status) qs.set("status", params.status);
+    if (params?.provider) qs.set("provider", params.provider);
+    if (params?.search) qs.set("search", params.search);
+    const query = qs.toString();
+    return await apiFetch<AdminPaymentsResponse>(`/api/payments/admin/all${query ? `?${query}` : ""}`, {
       auth: true,
     });
   },

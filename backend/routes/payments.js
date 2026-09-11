@@ -1,5 +1,5 @@
 const express = require("express");
-const { requireAuth } = require("../middleware/auth");
+const { requireAuth, requireRole } = require("../middleware/auth");
 const {
   createIntent,
   stripeWebhook,
@@ -9,6 +9,7 @@ const {
   createIremboPayInvoice,
   irembopayWebhook,
   getPaymentStatus,
+  listAllPaymentsAdmin,
 } = require("../controllers/paymentsController");
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.post("/intent", requireAuth, createIntent);
 router.post("/irembopay/invoice", requireAuth, createIremboPayInvoice);
 router.get("/status/:providerRef", requireAuth, getPaymentStatus);
 router.get("/me", requireAuth, myPayments);
+router.get("/admin/all", requireAuth, requireRole("ADMIN"), listAllPaymentsAdmin);
 
 // Webhooks — NOT behind requireAuth (providers can't hold a user JWT).
 // Each handler verifies its own provider-specific signature instead.

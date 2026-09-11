@@ -441,6 +441,75 @@ async function getPaymentStatus(req, res, next) {
   }
 }
 
+// GET /api/payments/admin/all
+// Admin transaction & audit panel endpoint
+async function listAllPaymentsAdmin(req, res, next) {
+  try {
+    const { status, provider, search } = req.query;
+
+    const where = {};
+    if (status && ["PENDING", "SUCCEEDED", "FAILED", "REFUNDED"].includes(status.toUpperCase())) {
+      where.status = status.toUpperCase();
+    }
+    if (provider && ["STRIPE", "MOMO", "FLUTTERWAVE", "IREMBOPAY"].includes(provider.toUpperCase())) {
+      where.provider = provider.toUpperCase();
+    }
+    if (search && search.trim()) {
+      const q = search.trim();
+      where.OR = [
+        { providerRef: { contains: q, mode: "insensitive" } },
+        { description: { contains: q, mode: "insensitive" } },
+        { user: { fullName: { contains: q, mode: "insensitive" } } },
+        { user: { email: { contains: q, mode: "insensitive" } } },
+      ];
+    }
+
+    const [payments, totalAll, succeededCount, pendingCount, failedCount, verifiedCount] =
+      await Promise.all([
+        prisma.payment.findMany({
+          where,
+          include: {
+            user: {
+              select: {
+                id: true,
+                fullName: true,
+                email: true,
+              },
+            },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 100,
+        }),
+        prisma.payment.count(),
+        prisma.payment.count({ where: { status: "SUCCEEDED" } }),
+        prisma.payment.count({ where: { status: "PENDING" } }),
+        prisma.payment.count({ where: { status: "FAILED" } }),
+        prisma.payment.count({ where: { webhookVerified: true } }),
+      ]);
+
+    // Calculate total settled volume in RWF
+    const succeededPayments = await prisma.payment.findMany({
+      where: { status: "SUCCEEDED" },
+      select: { amountCents: true },
+    });
+    const totalVolumeRwf = succeededPayments.reduce((acc, p) => acc + Math.round(p.amountCents / 100), 0);
+
+    res.json({
+      payments,
+      summary: {
+        totalCount: totalAll,
+        succeededCount,
+        pendingCount,
+        failedCount,
+        verifiedCount,
+        totalVolumeRwf,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   createIntent,
   stripeWebhook,
@@ -450,5 +519,6 @@ module.exports = {
   createIremboPayInvoice,
   irembopayWebhook,
   getPaymentStatus,
+  listAllPaymentsAdmin,
 };
 

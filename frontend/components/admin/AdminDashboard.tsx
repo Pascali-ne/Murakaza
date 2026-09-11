@@ -6,8 +6,9 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import CmsEditor from "./CmsEditor";
 import MaterialsManager from "./MaterialsManager";
 import MediaManager from "./MediaManager";
+import PaymentsAuditPanel from "./PaymentsAuditPanel";
 
-type Tab = "materials" | "content" | "media" | "feedback";
+type Tab = "materials" | "content" | "media" | "payments" | "feedback";
 
 /**
  * Gate: render this only after confirming `user.role === "ADMIN"`
@@ -118,7 +119,7 @@ export default function AdminDashboard({ user }: { user: AuthUser }) {
       </div>
 
       <div className="mt-6 flex flex-wrap gap-2 border-b border-ubumwe-100">
-        {(["materials", "content", "media", "feedback"] as Tab[]).map((tabKey) => (
+        {(["materials", "content", "media", "payments", "feedback"] as Tab[]).map((tabKey) => (
           <button
             key={tabKey}
             onClick={() => setTab(tabKey)}
@@ -132,6 +133,8 @@ export default function AdminDashboard({ user }: { user: AuthUser }) {
               ? (language === "rw" ? "🎬 Hero & Video CMS" : "🎬 Hero & Video CMS")
               : tabKey === "media"
               ? (language === "rw" ? "📁 Ibyashyizweho (Media)" : "📁 Uploaded Items / Media")
+              : tabKey === "payments"
+              ? (language === "rw" ? "💳 Ibyishyuwe n'Amakuru (Audit)" : "💳 Payments & Orders")
               : t("admin.tabs.feedback")}
           </button>
         ))}
@@ -145,6 +148,8 @@ export default function AdminDashboard({ user }: { user: AuthUser }) {
         <CmsEditor items={items} onSaved={refresh} />
       ) : tab === "media" ? (
         <MediaManager />
+      ) : tab === "payments" ? (
+        <PaymentsAuditPanel />
       ) : (
         <FeedbackModerationPanel items={pendingFeedback} onModerate={moderate} onDelete={deleteFeedback} />
       )}

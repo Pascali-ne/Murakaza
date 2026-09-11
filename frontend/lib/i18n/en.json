@@ -1,0 +1,193 @@
+{
+  "nav": {
+    "home": "Home",
+    "supplies": "Supplies",
+    "courses": "Courses",
+    "feedback": "Reviews",
+    "admin": "Admin",
+    "login": "Log in",
+    "signup": "Get started"
+  },
+  "hero": {
+    "eyebrow": "",
+    "title": "Everything your student needs, in one welcoming place",
+    "subtitle": "Murakaza connects Rwandan families to affordable school supplies and guided courses — with local pickup, Mobile Money checkout, and support in Kinyarwanda and English.",
+    "ctaPrimary": "Shop supplies",
+    "ctaSecondary": "Browse courses",
+    "statBadge": "12,400+ students supplied this term"
+  },
+  "supplies": {
+    "title": "Popular this term",
+    "description": "Notebooks, uniforms, and learning kits sourced from vetted local suppliers.",
+    "viewAll": "View all supplies"
+  },
+  "courses": {
+    "title": "Courses led by Rwandan educators",
+    "description": "Short, practical courses in math, English, ICT, and exam prep.",
+    "viewAll": "View all courses"
+  },
+  "catalog": {
+    "searchPlaceholder": "Search supplies, books, courses, or subjects...",
+    "all": "All Catalog",
+    "suppliesTab": "School Supplies",
+    "coursesTab": "Educator Courses",
+    "categories": {
+      "all": "All categories",
+      "stationery": "Exercise Books & Paper",
+      "instruments": "Math Geometry Sets",
+      "backpacks": "School Bags",
+      "electronics": "Calculators & STEM",
+      "uniforms": "Uniforms & Wear",
+      "stem": "STEM & Science",
+      "coding": "Coding & ICT",
+      "languages": "Languages & Writing"
+    },
+    "noResults": "No products or courses match your filters.",
+    "clearFilters": "Reset all filters",
+    "resultsCount": "products available",
+    "filterLabel": "Filter by Category"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added to Cart!",
+    "buyNow": "Buy Now",
+    "inStock": "In stock",
+    "outOfStock": "Out of stock",
+    "unitsAvailable": "units available",
+    "rebApproved": "REB Approved",
+    "nesaApproved": "NESA Authorized",
+    "instructor": "Educator",
+    "duration": "Duration",
+    "level": "Grade Level",
+    "syllabus": "Curriculum & Syllabus",
+    "specs": "Item Specifications",
+    "deliveryInfo": "Free Kigali pickup & fast district parcel delivery across Rwanda.",
+    "reviews": "verified reviews",
+    "backToCatalog": "Back to catalog",
+    "relatedTitle": "Recommended for this term",
+    "quantity": "Quantity"
+  },
+  "cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty",
+    "emptySub": "Explore curriculum exercise books, math instruments, uniforms, and courses.",
+    "browseCatalog": "Browse Catalog",
+    "subtotal": "Subtotal",
+    "shipping": "Delivery / Kigali Pickup",
+    "free": "FREE",
+    "total": "Total Amount",
+    "checkout": "Proceed to Checkout",
+    "clear": "Clear cart",
+    "itemsCount": "items",
+    "removeItem": "Remove item"
+  },
+  "checkout": {
+    "title": "Secure Checkout",
+    "subtitle": "Instant confirmation via Mobile Money, Card, or Flutterwave",
+    "paymentMethod": "Select Payment Method",
+    "momo": "Mobile Money (MoMo)",
+    "momoSub": "MTN Rwanda (*182#) & Airtel Money (*500#)",
+    "card": "Credit / Debit Card",
+    "cardSub": "Visa, Mastercard via Stripe",
+    "flutterwave": "Flutterwave",
+    "flutterwaveSub": "Direct Bank & Multi-Currency payment",
+    "phoneLabel": "Mobile Money Phone Number",
+    "phonePlaceholder": "078XXXXXXX or 073XXXXXXX",
+    "telecomLabel": "Network Operator",
+    "mtn": "MTN Rwanda MoMo",
+    "airtel": "Airtel Rwanda Money",
+    "fullName": "Full Name",
+    "email": "Email for digital receipt",
+    "cardName": "Name on Card",
+    "cardNumber": "Card Number",
+    "cardExpiry": "MM/YY",
+    "cardCvc": "CVC",
+    "payNow": "Pay",
+    "processing": "Securing transaction...",
+    "confirmPrompt": "USSD prompt initiated. Check your mobile phone to approve the transaction.",
+    "successTitle": "Payment Successful!",
+    "successSub": "Murakoze cyane! Your order and enrollment are confirmed.",
+    "orderRef": "Payment Reference",
+    "receiptBtn": "Print Receipt",
+    "continueShopping": "Continue Shopping",
+    "errorGeneric": "Payment failed. Please verify your details or network connectivity.",
+    "guestNotice": "Checking out securely. You will receive an instant digital receipt."
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in to access your course portal, order history, and account settings.",
+    "signupTitle": "Create your account",
+    "signupSubtitle": "Join Murakaza to empower Rwandan students with supplies and education.",
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "e.g. Uwase Clarisse",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "e.g. clarisse@student.rw",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordPlaceholder": "Re-type password",
+    "loginBtn": "Sign In",
+    "signupBtn": "Create Account",
+    "loggingIn": "Signing in...",
+    "signingUp": "Creating account...",
+    "noAccount": "Don't have an account yet?",
+    "haveAccount": "Already have an account?",
+    "adminBadge": "Admin",
+    "userBadge": "Student / Parent",
+    "logout": "Sign Out",
+    "adminLink": "Admin Dashboard",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordLength": "Password must be at least 8 characters.",
+    "emailInvalid": "Please enter a valid email address.",
+    "fullNameRequired": "Please enter your full name."
+  },
+  "feedback": {
+    "title": "What families are saying",
+    "formTitle": "Share your experience",
+    "nameLabel": "Your name",
+    "ratingLabel": "Rating",
+    "commentLabel": "Your feedback",
+    "commentPlaceholder": "Tell us how it went...",
+    "submit": "Submit feedback",
+    "submitting": "Submitting...",
+    "successMessage": "Thanks! Your feedback will appear once it's been reviewed.",
+    "errorMessage": "Something went wrong. Please try again."
+  },
+  "admin": {
+    "dashboardTitle": "Admin dashboard",
+    "tabs": {
+      "content": "Content",
+      "media": "Media",
+      "feedback": "Feedback moderation",
+      "payments": "Payments"
+    },
+    "content": {
+      "addNew": "Add content block",
+      "keyLabel": "Key",
+      "typeLabel": "Type",
+      "englishLabel": "English",
+      "kinyarwandaLabel": "Kinyarwanda",
+      "mediaUrlLabel": "Media URL",
+      "posterUrlLabel": "Poster image URL",
+      "publishedLabel": "Published",
+      "save": "Save changes",
+      "delete": "Delete"
+    },
+    "feedbackModeration": {
+      "approve": "Approve",
+      "hide": "Hide",
+      "delete": "Delete",
+      "pending": "Pending review",
+      "approved": "Approved",
+      "hidden": "Hidden"
+    }
+  },
+  "footer": {
+    "tagline": "Murakaza — welcoming Rwandan students to the tools they need to succeed.",
+    "rights": "All rights reserved."
+  },
+  "languageSwitch": {
+    "en": "EN",
+    "rw": "RW"
+  }
+}

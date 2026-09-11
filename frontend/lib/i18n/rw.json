@@ -1,0 +1,193 @@
+{
+  "nav": {
+    "home": "Ahabanza",
+    "supplies": "Ibikoresho",
+    "courses": "Amasomo",
+    "feedback": "Ibitekerezo",
+    "admin": "Ubuyobozi",
+    "login": "Injira",
+    "signup": "Tangira"
+  },
+  "hero": {
+    "eyebrow": "",
+    "title": "Ibyo umunyeshuri wawe akeneye byose, ahantu hamwe",
+    "subtitle": "Murakaza ihuza imiryango y'Abanyarwanda n'ibikoresho by'ishuri bihendutse n'amasomo ayoboye — hamwe no gutwara ibintu hafi, kwishyura ukoresheje Mobile Money, no gufashwa mu Kinyarwanda no mu Cyongereza.",
+    "ctaPrimary": "Gura ibikoresho",
+    "ctaSecondary": "Reba amasomo",
+    "statBadge": "Abanyeshuri barenga 12,400 bahawe ibikoresho muri iyi gihembwe"
+  },
+  "supplies": {
+    "title": "Ibikunzwe muri iki gihembwe",
+    "description": "Ibitabo, imyenda y'ishuri, n'ibikoresho by'amasomo biva ku bacuruzi baturutse mu Rwanda babogamiwe.",
+    "viewAll": "Reba ibikoresho byose"
+  },
+  "courses": {
+    "title": "Amasomo yigishwa n'abarimu b'Abanyarwanda",
+    "description": "Amasomo magufi, y'ingirakamaro muri matematika, Icyongereza, ikoranabuhanga, no gutegura ibizamini.",
+    "viewAll": "Reba amasomo yose"
+  },
+  "catalog": {
+    "searchPlaceholder": "Shakisha ibikoresho, ibitabo, amasomo, cyangwa amasomo y'ubumenyi...",
+    "all": "Ibiri mu iduka byose",
+    "suppliesTab": "Ibikoresho by'ishuri",
+    "coursesTab": "Amasomo y'abarimu",
+    "categories": {
+      "all": "Ibyiciro byose",
+      "stationery": "Ibitabo by'imyitozo n'impapuro",
+      "instruments": "Ibikoresho bya Matematika",
+      "backpacks": "Ibikapu by'ishuri",
+      "electronics": "Imashini zibara na STEM",
+      "uniforms": "Imyenda y'ishuri",
+      "stem": "Ubumenyi n'Ikoranabuhanga",
+      "coding": "Kwandika Porogaramu (ICT)",
+      "languages": "Indimi no Kwandika"
+    },
+    "noResults": "Nta bikoresho cyangwa amasomo ahuye n'ibyo ushakishije.",
+    "clearFilters": "Garura ibipimo byose",
+    "resultsCount": "ibikoresho bibonetse",
+    "filterLabel": "Hitamo icyiciro"
+  },
+  "product": {
+    "addToCart": "Ongeraho mu gatebo",
+    "addedToCart": "Byongerewe mu gatebo!",
+    "buyNow": "Gura nonaha",
+    "inStock": "Bihari",
+    "outOfStock": "Byashize",
+    "unitsAvailable": "bisigaye mu bubiko",
+    "rebApproved": "Byemewe na REB",
+    "nesaApproved": "Byemejwe na NESA",
+    "instructor": "Mwarimu",
+    "duration": "Igihe bifata",
+    "level": "Urwego",
+    "syllabus": "Integanyanyigisho y'isomo",
+    "specs": "Ibiranga iki gikoresho",
+    "deliveryInfo": "Kufata ibintu ubuntu i Kigali no kohereza mu ntara zose z'u Rwanda.",
+    "reviews": "ibitekerezo by'abaguze",
+    "backToCatalog": "Subira ku iduka",
+    "relatedTitle": "Ibindi bishobora kugufasha muri iki gihembwe",
+    "quantity": "Umubare"
+  },
+  "cart": {
+    "title": "Agatebo kawe",
+    "empty": "Agatebo kawe karimo ubusa",
+    "emptySub": "Reba ibitabo by'integanyanyigisho, ibikoresho bya matematika, imyenda, n'amasomo yacu.",
+    "browseCatalog": "Tangira kugura",
+    "subtotal": "Igiteranyo gito",
+    "shipping": "Kugezwaho / Gufatira i Kigali",
+    "free": "UBUNTU",
+    "total": "Igiteranyo cyose",
+    "checkout": "Komeza wishyure",
+    "clear": "Kura byose mu gatebo",
+    "itemsCount": "ibikoresho",
+    "removeItem": "Kura mu gatebo"
+  },
+  "checkout": {
+    "title": "Kwishyura mu mutekano",
+    "subtitle": "Kwishyura vuba ukoresheje Mobile Money, Ikarita, cyangwa Flutterwave",
+    "paymentMethod": "Hitamo uburyo bwo kwishyura",
+    "momo": "Mobile Money (MoMo)",
+    "momoSub": "MTN Rwanda (*182#) na Airtel Money (*500#)",
+    "card": "Ikarita ya Banki (Visa / Mastercard)",
+    "cardSub": "Yishyuwe binyuze kuri Stripe",
+    "flutterwave": "Flutterwave",
+    "flutterwaveSub": "Kwishyura binyuze muri konti ya banki",
+    "phoneLabel": "Nimero ya terefone ya Mobile Money",
+    "phonePlaceholder": "078XXXXXXX cyangwa 073XXXXXXX",
+    "telecomLabel": "Umuyoboro wa terefone",
+    "mtn": "MTN Rwanda MoMo",
+    "airtel": "Airtel Rwanda Money",
+    "fullName": "Amazina yose",
+    "email": "Imeli yo kwakira inyemezabwishyu",
+    "cardName": "Amazina ari ku ikarita",
+    "cardNumber": "Nimero y'ikarita",
+    "cardExpiry": "Ukwezi/Umwaka",
+    "cardCvc": "CVC",
+    "payNow": "Ishyura",
+    "processing": "Kwishyura birakurikiranwa...",
+    "confirmPrompt": "Ubutumwa bwageze kuri terefone yawe. Shyiramo umubare w'ibanga wawe wemeze.",
+    "successTitle": "Kwishyura byagenze neza!",
+    "successSub": "Murakoze cyane! Ibikoresho byawe n'amasomo byemejwe.",
+    "orderRef": "Inomero y'ubwishyu",
+    "receiptBtn": "Gucapa inyemezabwishyu",
+    "continueShopping": "Komeza kureba ibikoresho",
+    "errorGeneric": "Kwishyura ntabwo bikunze. Reba niba amakuru watanze ari yo cyangwa wongere ugerageze.",
+    "guestNotice": "Urimo kwishyura mu mutekano. Urahita uhabwa inyemezabwishyu."
+  },
+  "auth": {
+    "loginTitle": "Murakaza neza",
+    "loginSubtitle": "Injira kugira ngo urebe amasomo yawe, amateka y'ibyo waguze, na konti yawe.",
+    "signupTitle": "Kora konti nshya muri Murakaza",
+    "signupSubtitle": "Iyandikishe wiyunge ku bihumbi by'ababyeyi, abanyeshuri, n'abarimu.",
+    "fullNameLabel": "Amazina yose",
+    "fullNamePlaceholder": "Urugero: Uwase Clarisse",
+    "emailLabel": "Aderesi ya Imeli",
+    "emailPlaceholder": "Urugero: clarisse@student.rw",
+    "passwordLabel": "Ijambo ry'ibanga",
+    "passwordPlaceholder": "Nibura inyuguti 8",
+    "confirmPasswordLabel": "Emeza ijambo ry'ibanga",
+    "confirmPasswordPlaceholder": "Ongera wandike ijambo ry'ibanga",
+    "loginBtn": "Injira muri konti",
+    "signupBtn": "Kora konti",
+    "loggingIn": "Kwinjira biracyakora...",
+    "signingUp": "Kurema konti biracyakora...",
+    "noAccount": "Nta konti ufite?",
+    "haveAccount": "Ubusanzwe ufite konti?",
+    "adminBadge": "Umuyobozi (Admin)",
+    "userBadge": "Umunyeshuri / Umubyeyi",
+    "logout": "Sohoka",
+    "adminLink": "Ikibaho cy'ubuyobozi",
+    "passwordMismatch": "Amagambo y'ibanga ntabwo ahura.",
+    "passwordLength": "Ijambo ry'ibanga rigomba kugira inyuguti nibura 8.",
+    "emailInvalid": "Nyamuneka andika imeli yuzuye.",
+    "fullNameRequired": "Nyamuneka andika amazina yawe yose."
+  },
+  "feedback": {
+    "title": "Ibyo imiryango ivuga",
+    "formTitle": "Sangira uburambe bwawe",
+    "nameLabel": "Amazina yawe",
+    "ratingLabel": "Amanota",
+    "commentLabel": "Igitekerezo cyawe",
+    "commentPlaceholder": "Tubwire uko byagenze...",
+    "submit": "Ohereza igitekerezo",
+    "submitting": "Kohereza...",
+    "successMessage": "Murakoze! Igitekerezo cyawe kizagaragara nyuma yo kugenzurwa.",
+    "errorMessage": "Habaye ikibazo. Ongera ugerageze."
+  },
+  "admin": {
+    "dashboardTitle": "Ikibaho cy'ubuyobozi",
+    "tabs": {
+      "content": "Ibikubiyemo",
+      "media": "Amashusho/Amashusho agenda",
+      "feedback": "Kugenzura ibitekerezo",
+      "payments": "Kwishyura"
+    },
+    "content": {
+      "addNew": "Ongeraho igice cy'ibikubiyemo",
+      "keyLabel": "Urufunguzo",
+      "typeLabel": "Ubwoko",
+      "englishLabel": "Icyongereza",
+      "kinyarwandaLabel": "Ikinyarwanda",
+      "mediaUrlLabel": "Aderesi y'amashusho",
+      "posterUrlLabel": "Aderesi y'ifoto isimbura",
+      "publishedLabel": "Byasohotse",
+      "save": "Bika impinduka",
+      "delete": "Siba"
+    },
+    "feedbackModeration": {
+      "approve": "Emeza",
+      "hide": "Hisha",
+      "delete": "Siba",
+      "pending": "Bitegereje isuzuma",
+      "approved": "Byemejwe",
+      "hidden": "Byahishwe"
+    }
+  },
+  "footer": {
+    "tagline": "Murakaza — twakira abanyeshuri b'Abanyarwanda ku bikoresho babakeneye kugira ngo batsinde.",
+    "rights": "Uburenganzira bwose burabitswe."
+  },
+  "languageSwitch": {
+    "en": "EN",
+    "rw": "RW"
+  }
+}

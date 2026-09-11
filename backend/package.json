@@ -1,0 +1,39 @@
+{
+  "name": "murakaza-api",
+  "version": "1.0.0",
+  "description": "Murakaza backend API (Render) — auth, CMS, payments, feedback",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.x"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "prisma:generate": "prisma generate --schema=../database/schema.prisma",
+    "prisma:migrate": "prisma migrate deploy --schema=../database/schema.prisma",
+    "db:push": "prisma db push --schema=../database/schema.prisma",
+    "seed": "node scripts/seed.js"
+  },
+  "prisma": {
+    "schema": "../database/schema.prisma"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.19.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "rate-limit-redis": "^4.2.0",
+    "redis": "^4.7.0",
+    "stripe": "^16.8.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "prisma": "^5.19.0"
+  }
+}

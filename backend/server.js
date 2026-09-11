@@ -12,6 +12,7 @@ const cmsRoutes = require("./routes/cms");
 const paymentsRoutes = require("./routes/payments");
 const feedbackRoutes = require("./routes/feedback");
 const catalogRoutes = require("./routes/catalog");
+const uploadRoutes = require("./routes/upload");
 const { stripeWebhook } = require("./controllers/paymentsController");
 
 const app = express();
@@ -39,8 +40,9 @@ app.use(generalLimiter);
 // so this route is registered before the global JSON parser below.
 app.post("/api/payments/webhook/stripe", express.raw({ type: "application/json" }), stripeWebhook);
 
-app.use(express.json({ limit: "2mb" }));
-app.use(express.urlencoded({ extended: true }));
+// 50mb limit to support uploading high-res product photos, materials, and hero video clips
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 app.get("/health", (req, res) => res.json({ status: "ok", time: new Date().toISOString() }));
 
@@ -49,6 +51,7 @@ app.use("/api/cms", cmsRoutes);
 app.use("/api/payments", paymentsRoutes);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/catalog", catalogRoutes);
+app.use("/api/upload", uploadRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

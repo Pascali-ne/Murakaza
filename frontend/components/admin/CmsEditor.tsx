@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { cms, CmsItem } from "@/lib/api";
+import { cms, CmsItem, resolveMediaUrl } from "@/lib/api";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import FileUpload from "./FileUpload";
 
 const CONTENT_TYPES: CmsItem["type"][] = ["HERO_VIDEO", "BANNER_IMAGE", "THUMBNAIL", "PAGE_COPY", "ANNOUNCEMENT"];
 
@@ -95,25 +96,33 @@ export default function CmsEditor({ items, onSaved }: { items: CmsItem[]; onSave
             </select>
           </label>
 
-          <label className="text-sm font-medium text-ink/80 sm:col-span-2">
-            {t("admin.content.mediaUrlLabel")}
-            <input
-              value={draft.mediaUrl ?? ""}
-              onChange={(e) => setDraft({ ...draft, mediaUrl: e.target.value })}
-              placeholder="https://cdn.murakaza.rw/hero.mp4"
-              className="mt-1 w-full rounded-card border border-ubumwe-100 px-3 py-2 text-sm"
-            />
-          </label>
+        </div>
 
-          <label className="text-sm font-medium text-ink/80 sm:col-span-2">
-            {t("admin.content.posterUrlLabel")}
-            <input
-              value={draft.posterUrl ?? ""}
-              onChange={(e) => setDraft({ ...draft, posterUrl: e.target.value })}
-              placeholder="https://cdn.murakaza.rw/hero-poster.jpg"
-              className="mt-1 w-full rounded-card border border-ubumwe-100 px-3 py-2 text-sm"
+        {/* Media Upload Fields */}
+        <div className="mt-5 space-y-4 border-t border-ubumwe-100 pt-4">
+          <FileUpload
+            label={draft.type === "HERO_VIDEO" ? "Hero Background Video (MP4 / WebM)" : "Media Asset File"}
+            description={
+              draft.type === "HERO_VIDEO"
+                ? "Upload a video file from your computer or pick an uploaded video from your library."
+                : "Upload an image or asset file from your device."
+            }
+            accept={draft.type === "HERO_VIDEO" ? "video/*" : "image/*"}
+            mediaType={draft.type === "HERO_VIDEO" ? "video" : "image"}
+            value={draft.mediaUrl}
+            onChange={(url) => setDraft({ ...draft, mediaUrl: url })}
+          />
+
+          {draft.type === "HERO_VIDEO" && (
+            <FileUpload
+              label="Video Poster Image (Optional)"
+              description="Displays while video loads or as high-speed fallback on mobile."
+              accept="image/*"
+              mediaType="image"
+              value={draft.posterUrl}
+              onChange={(url) => setDraft({ ...draft, posterUrl: url })}
             />
-          </label>
+          )}
         </div>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -167,17 +176,17 @@ export default function CmsEditor({ items, onSaved }: { items: CmsItem[]; onSave
         {(draft.mediaUrl || draft.posterUrl) && (
           <div className="mt-4 rounded-xl border border-ubumwe-100 bg-ubumwe-900/10 p-3">
             <p className="text-xs font-bold text-ubumwe-900">Live Media Preview:</p>
-            <div className="mt-2 relative h-36 w-full overflow-hidden rounded-lg bg-black">
+            <div className="mt-2 relative h-48 w-full overflow-hidden rounded-lg bg-black">
               {draft.mediaUrl ? (
                 <video
-                  src={draft.mediaUrl || undefined}
-                  poster={draft.posterUrl || undefined}
+                  src={resolveMediaUrl(draft.mediaUrl)}
+                  poster={resolveMediaUrl(draft.posterUrl) || undefined}
                   controls
                   className="h-full w-full object-cover"
                 />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={draft.posterUrl || ""} alt="" className="h-full w-full object-cover" />
+                <img src={resolveMediaUrl(draft.posterUrl) || ""} alt="" className="h-full w-full object-cover" />
               )}
             </div>
           </div>

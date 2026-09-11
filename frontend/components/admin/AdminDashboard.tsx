@@ -5,8 +5,9 @@ import { cms, feedback as feedbackApi, CmsItem, FeedbackItem, AuthUser } from "@
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import CmsEditor from "./CmsEditor";
 import MaterialsManager from "./MaterialsManager";
+import MediaManager from "./MediaManager";
 
-type Tab = "materials" | "content" | "feedback";
+type Tab = "materials" | "content" | "media" | "feedback";
 
 /**
  * Gate: render this only after confirming `user.role === "ADMIN"`
@@ -116,8 +117,8 @@ export default function AdminDashboard({ user }: { user: AuthUser }) {
         <span className="rounded-pill bg-imbuto-50 px-3 py-1 text-xs font-semibold text-imbuto-600">{user.fullName}</span>
       </div>
 
-      <div className="mt-6 flex gap-2 border-b border-ubumwe-100">
-        {(["materials", "content", "feedback"] as Tab[]).map((tabKey) => (
+      <div className="mt-6 flex flex-wrap gap-2 border-b border-ubumwe-100">
+        {(["materials", "content", "media", "feedback"] as Tab[]).map((tabKey) => (
           <button
             key={tabKey}
             onClick={() => setTab(tabKey)}
@@ -129,6 +130,8 @@ export default function AdminDashboard({ user }: { user: AuthUser }) {
               ? (language === "rw" ? "🎒 Ibikoresho n'Amasomo" : "🎒 Materials & Supplies")
               : tabKey === "content"
               ? (language === "rw" ? "🎬 Hero & Video CMS" : "🎬 Hero & Video CMS")
+              : tabKey === "media"
+              ? (language === "rw" ? "📁 Ibyashyizweho (Media)" : "📁 Uploaded Items / Media")
               : t("admin.tabs.feedback")}
           </button>
         ))}
@@ -140,6 +143,8 @@ export default function AdminDashboard({ user }: { user: AuthUser }) {
         <MaterialsManager />
       ) : tab === "content" ? (
         <CmsEditor items={items} onSaved={refresh} />
+      ) : tab === "media" ? (
+        <MediaManager />
       ) : (
         <FeedbackModerationPanel items={pendingFeedback} onModerate={moderate} onDelete={deleteFeedback} />
       )}

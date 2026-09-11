@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { catalog, CatalogItem } from "@/lib/api";
+import { catalog, CatalogItem, resolveMediaUrl } from "@/lib/api";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { CATALOG_ITEMS } from "@/lib/catalogData";
+import FileUpload from "./FileUpload";
 
 const CATEGORIES = [
   "stationery",
@@ -244,7 +245,7 @@ export default function MaterialsManager() {
                         <div className="flex items-center gap-3">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
-                            src={item.image}
+                            src={resolveMediaUrl(item.image)}
                             alt=""
                             className="h-10 w-10 shrink-0 rounded-lg object-cover bg-mist border border-ubumwe-100"
                           />
@@ -450,41 +451,29 @@ export default function MaterialsManager() {
                 </div>
               </div>
 
-              {/* Badge & Image URL */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="block font-semibold text-ubumwe-900">Badge Label</label>
-                  <input
-                    type="text"
-                    value={editingItem.badge || ""}
-                    onChange={(e) => setEditingItem({ ...editingItem, badge: e.target.value })}
-                    placeholder="Popular, Essential, Teacher Choice..."
-                    className="mt-1 w-full rounded-lg border border-ubumwe-100 px-3 py-2 text-ink focus:border-ubumwe focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block font-semibold text-ubumwe-900">Image URL</label>
-                  <input
-                    type="url"
-                    value={editingItem.image || ""}
-                    onChange={(e) => setEditingItem({ ...editingItem, image: e.target.value })}
-                    placeholder="https://images.unsplash.com/..."
-                    className="mt-1 w-full rounded-lg border border-ubumwe-100 px-3 py-2 text-ink focus:border-ubumwe focus:outline-none"
-                  />
-                </div>
+              {/* Badge Label */}
+              <div>
+                <label className="block font-semibold text-ubumwe-900">Badge Label</label>
+                <input
+                  type="text"
+                  value={editingItem.badge || ""}
+                  onChange={(e) => setEditingItem({ ...editingItem, badge: e.target.value })}
+                  placeholder="Popular, Essential, Teacher Choice..."
+                  className="mt-1 w-full rounded-lg border border-ubumwe-100 px-3 py-2 text-ink focus:border-ubumwe focus:outline-none"
+                />
               </div>
 
-              {/* Image Preview */}
-              {editingItem.image && (
-                <div className="mt-2 flex items-center gap-3 rounded-xl border border-ubumwe-100 bg-mist p-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={editingItem.image} alt="Preview" className="h-16 w-16 rounded-lg object-cover" />
-                  <div>
-                    <p className="font-semibold text-ubumwe-900">Image Preview</p>
-                    <p className="text-[11px] text-ink/50">This photo will display in the catalog and the hero sliding showcase.</p>
-                  </div>
-                </div>
-              )}
+              {/* Direct File Upload & Uploaded Items Selector */}
+              <div className="pt-2 border-t border-ubumwe-100">
+                <FileUpload
+                  label="Product / Material Photo"
+                  description="Upload image directly from your device, or pick from previously uploaded items."
+                  accept="image/*"
+                  mediaType="image"
+                  value={editingItem.image}
+                  onChange={(url) => setEditingItem({ ...editingItem, image: url })}
+                />
+              </div>
 
               {/* Submit Buttons */}
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-ubumwe-100">

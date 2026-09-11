@@ -3,6 +3,17 @@
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://murakaza-api.onrender.com";
 
+export function resolveMediaUrl(url?: string | null): string {
+  if (!url) return "";
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:") || url.startsWith("blob:")) {
+    return url;
+  }
+  if (url.startsWith("/api/upload")) {
+    return `${API_BASE_URL}${url}`;
+  }
+  return url;
+}
+
 interface RequestOptions extends RequestInit {
   auth?: boolean; // attach the stored access token
 }
@@ -31,11 +42,92 @@ async function apiFetch<T>(path: string, options: RequestOptions = {}): Promise<
   return res.json();
 }
 
+// --- Uploads ---
+export const upload = {
+  file: async (file: File): Promise<{ id: string; url: string; filename: string; mimeType: string; sizeBytes: number }> => {
+    // Read file as base64
+    const base64Data = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+
+    const res = await apiFetch<{
+      id: string;
+      url: string;
+      fullUrl?: string;
+      filename: string;
+      mimeType: string;
+      sizeBytes: number;
+    }>("/api/upload", {
+      method: "POST",
+      body: JSON.stringify({
+        filename: file.name,
+        mimeType: file.type,
+        data: base64Data,
+      }),
+      auth: true,
+    });
+
+    return {
+      ...res,
+      url: resolveMediaUrl(res.url),
+    };
+  },
+
+  list: async (): Promise<{ files: Array<{ id: string; url: string; filename: string; mimeType: string; sizeBytes: number; createdAt: string }> }> => {
+    const res = await apiFetch<{ files: Array<{ id: string; url: string; filename: string; mimeType: string; sizeBytes: number; createdAt: string }> }>(
+      "/api/upload",
+      { auth: true }
+    );
+    return {
+      files: (res.files || []).map((f) => ({
+        ...f,
+        url: resolveMediaUrl(f.url),
+      })),
+    };
+  },
+
+  remove: (id: string) =>
+    apiFetch<{ message: string; id: string }>(`/api/upload/${id}`, {
+      method: "DELETE",
+      auth: true,
+    }),
+};
+
 // --- CMS ---
 export const cms = {
-  listPublished: (type?: string) => apiFetch<{ items: CmsItem[] }>(`/api/cms${type ? `?type=${type}` : ""}`),
-  getByKey: (key: string) => apiFetch<{ item: CmsItem }>(`/api/cms/${key}`),
-  listAllAdmin: () => apiFetch<{ items: CmsItem[] }>("/api/cms/admin/all", { auth: true }),
+  listPublished: async (type?: string) => {
+    const res = await apiFetch<{ items: CmsItem[] }>(`/api/cms${type ? `?type=${type}` : ""}`);
+    return {
+      items: (res.items || []).map((item) => ({
+        ...item,
+        mediaUrl: resolveMediaUrl(item.mediaUrl),
+        posterUrl: resolveMediaUrl(item.posterUrl),
+      })),
+    };
+  },
+  getByKey: async (key: string) => {
+    const res = await apiFetch<{ item: CmsItem }>(`/api/cms/${key}`);
+    return {
+      item: {
+        ...res.item,
+        mediaUrl: resolveMediaUrl(res.item.mediaUrl),
+        posterUrl: resolveMediaUrl(res.item.posterUrl),
+      },
+    };
+  },
+  listAllAdmin: async () => {
+    const res = await apiFetch<{ items: CmsItem[] }>("/api/cms/admin/all", { auth: true });
+    return {
+      items: (res.items || []).map((item) => ({
+        ...item,
+        mediaUrl: resolveMediaUrl(item.mediaUrl),
+        posterUrl: resolveMediaUrl(item.posterUrl),
+      })),
+    };
+  },
   upsert: (payload: Partial<CmsItem>) =>
     apiFetch<{ item: CmsItem }>("/api/cms", { method: "POST", body: JSON.stringify(payload), auth: true }),
   remove: (id: string) => apiFetch<void>(`/api/cms/${id}`, { method: "DELETE", auth: true }),
@@ -106,9 +198,16 @@ export const catalog = {
     const qs = query.toString();
 
     try {
-      return await apiFetch<{ total: number; supplies: CatalogItem[]; courses: CatalogItem[]; items: CatalogItem[] }>(
+      const res = await apiFetch<{ total: number; supplies: CatalogItem[]; courses: CatalogItem[]; items: CatalogItem[] }>(
         `/api/catalog${qs ? `?${qs}` : ""}`
       );
+      const normalize = (i: CatalogItem) => ({ ...i, image: resolveMediaUrl(i.image) });
+      return {
+        total: res.total,
+        supplies: (res.supplies || []).map(normalize),
+        courses: (res.courses || []).map(normalize),
+        items: (res.items || []).map(normalize),
+      };
     } catch {
       // Offline / development fallback
       const { CATALOG_ITEMS } = await import("./catalogData");
@@ -131,23 +230,29 @@ export const catalog = {
         );
       }
 
+      const normalize = (i: CatalogItem) => ({ ...i, image: resolveMediaUrl(i.image) });
+      const normSupplies = filtered.filter((i) => i.type === "SUPPLY").map(normalize);
+      const normCourses = filtered.filter((i) => i.type === "COURSE").map(normalize);
+      const normItems = filtered.map(normalize);
+
       return {
         total: filtered.length,
-        supplies: filtered.filter((i) => i.type === "SUPPLY"),
-        courses: filtered.filter((i) => i.type === "COURSE"),
-        items: filtered,
+        supplies: normSupplies,
+        courses: normCourses,
+        items: normItems,
       };
     }
   },
 
   getById: async (id: string) => {
     try {
-      return await apiFetch<{ item: CatalogItem }>(`/api/catalog/${id}`);
+      const res = await apiFetch<{ item: CatalogItem }>(`/api/catalog/${id}`);
+      return { item: { ...res.item, image: resolveMediaUrl(res.item.image) } };
     } catch {
       const { CATALOG_ITEMS } = await import("./catalogData");
       const found = CATALOG_ITEMS.find((i) => i.id === id);
       if (!found) throw new Error("Catalog item not found");
-      return { item: found };
+      return { item: { ...found, image: resolveMediaUrl(found.image) } };
     }
   },
 

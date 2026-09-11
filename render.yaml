@@ -3,7 +3,7 @@ services:
     name: murakaza-api
     runtime: node
     rootDir: backend
-    buildCommand: npm install && npm run prisma:generate
+    buildCommand: npm install && DATABASE_URL="${DATABASE_URL:-postgresql://postgres:postgres@localhost:5432/db}" DIRECT_URL="${DIRECT_URL:-postgresql://postgres:postgres@localhost:5432/db}" npm run prisma:generate
     startCommand: npm start
     plan: free
     envVars:
